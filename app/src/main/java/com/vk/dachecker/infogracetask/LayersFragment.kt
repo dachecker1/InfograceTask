@@ -5,9 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.vk.dachecker.infogracetask.databinding.ActivityMainBinding
 import com.vk.dachecker.infogracetask.databinding.FragmentLayersBinding
 
 const val ARG_OBJECT = "object"
@@ -17,7 +15,7 @@ class LayersFragment : Fragment() {
     private var _binding: FragmentLayersBinding? = null
     private val binding: FragmentLayersBinding
         get() = _binding ?: throw RuntimeException("FragmentLayersBinding == null")
-    private val adapter = SidePanelAdapter()
+    private lateinit var adapter : SidePanelAdapter
 
 
     override fun onCreateView(
@@ -38,6 +36,7 @@ class LayersFragment : Fragment() {
         val items = SidePanelItemFactory(requireContext())
 
         binding.apply {
+            adapter = SidePanelAdapter()
             rcView.layoutManager = LinearLayoutManager(requireContext())
             rcView.adapter = adapter
 

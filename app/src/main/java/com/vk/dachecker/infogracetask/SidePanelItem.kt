@@ -4,10 +4,10 @@ data class SidePanelItem(
     val imageId: Int,
     val title: String,
     val isDetailOpen:Boolean,
-    val switcher : Boolean,
-    val transparency : Int,
+    val switcher : Boolean?,
     val synchronization : String,
     val seekBar : Int,
     val amount: Int,
-    val zoom: Int
+    val zoom1: Int,
+    val zoom2: Int
 )

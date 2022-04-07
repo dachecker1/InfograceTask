@@ -12,74 +12,76 @@
         android:orientation="vertical"
         tools:ignore="MissingConstraints">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/mainPanel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/imInvisible"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="4dp"
-            android:src="@drawable/ic_invisible"
-            app:layout_constraintBottom_toBottomOf="@+id/switcher"
-            app:layout_constraintEnd_toStartOf="@+id/imArrow"
-            app:layout_constraintStart_toEndOf="@+id/tvTitle"
-            app:layout_constraintTop_toTopOf="@+id/switcher" />
+            <ImageView
+                android:id="@+id/imInvisible"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="4dp"
+                android:src="@drawable/ic_invisible"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/switcher"
+                app:layout_constraintEnd_toStartOf="@+id/imArrow"
+                app:layout_constraintStart_toEndOf="@+id/tvTitle"
+                app:layout_constraintTop_toTopOf="@+id/switcher" />
 
-        <ImageView
+            <ImageView
 
-            android:id="@+id/imArrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="22dp"
-            android:src="@drawable/ic_arrow"
-            app:layout_constraintBottom_toBottomOf="@+id/switcher"
-            app:layout_constraintEnd_toStartOf="@+id/switcher"
-            app:layout_constraintStart_toEndOf="@+id/imInvisible"
-            app:layout_constraintTop_toTopOf="@+id/switcher" />
+                android:id="@+id/imArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="22dp"
+                android:src="@drawable/ic_arrow_up"
+                app:layout_constraintBottom_toBottomOf="@+id/switcher"
+                app:layout_constraintEnd_toStartOf="@+id/switcher"
+                app:layout_constraintStart_toEndOf="@+id/imInvisible"
+                app:layout_constraintTop_toTopOf="@+id/switcher" />
 
-        <com.google.android.material.switchmaterial.SwitchMaterial
+            <com.google.android.material.switchmaterial.SwitchMaterial
 
-            android:id="@+id/switcher"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:showText="false" />
+                android:id="@+id/switcher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:showText="false" />
 
-        <ImageView
+            <ImageView
 
-            android:id="@+id/imLineLogo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="20dp"
-            android:src="@drawable/ic_grometry_collection"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+                android:id="@+id/imLineLogo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="20dp"
+                android:src="@drawable/ic_grometry_collection"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+            <TextView
 
-            android:id="@+id/tvTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/sloy_delyan"
-            android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="@+id/imLineLogo"
-            app:layout_constraintEnd_toStartOf="@+id/imInvisible"
-            app:layout_constraintStart_toEndOf="@+id/imLineLogo"
-            app:layout_constraintTop_toTopOf="@+id/imLineLogo" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                android:id="@+id/tvTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/sloy_delyan"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="@+id/imLineLogo"
+                app:layout_constraintEnd_toStartOf="@+id/imInvisible"
+                app:layout_constraintStart_toEndOf="@+id/imLineLogo"
+                app:layout_constraintTop_toTopOf="@+id/imLineLogo" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layerOption"
@@ -88,6 +90,12 @@
             android:layout_marginStart="16dp"
             android:background="@color/dark_blue"
             android:visibility="visible">
+
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="?android:attr/listDivider" />
 
             <TextView
                 android:id="@+id/tvTransparency"

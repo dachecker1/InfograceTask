@@ -2,10 +2,10 @@
     <string name="app_name">InfograceTask</string>
     <!-- Layers -->
     <string name="sloy_delyan">Слой делян</string>
-    <string name="sloy_transparency">Прозрачность: %d%</string>
+    <string name="sloy_transparency">Прозрачность: %d%%</string>
     <string name="sloy_synch_date">Синхр: %s</string>
     <string name="sloy_elements">Эл-ов: %d</string>
-    <string name="sloy_zoom">Зум: %d-%d</string>
+    <string name="sloy_zoom">Зум: %d - %d</string>
     <string name="sloy_signal_o_lesoizmenenijax">Сигнал о лесоизменениях, тестовая выборка с ув-ным шагом</string>
     <string name="sloy_firewall">Преграды для прохождения огня</string>
     <string name="sloy_cloudy_mask">Маска облачности от %s</string>
