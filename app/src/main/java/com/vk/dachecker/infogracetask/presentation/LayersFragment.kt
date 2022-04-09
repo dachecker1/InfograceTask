@@ -1,26 +1,22 @@
 package com.vk.dachecker.infogracetask.presentation
 
 import android.os.Bundle
-import android.util.Log
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.vk.dachecker.infogracetask.databinding.FragmentLayersBinding
-import com.vk.dachecker.infogracetask.domain.CoroutineHelper
 import com.vk.dachecker.infogracetask.domain.SidePanelItem
-import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import java.lang.Thread.sleep
+import java.util.*
 
 const val ARG_OBJECT = "object"
 
 class LayersFragment : Fragment() {
+
+    private var touchHelper : ItemTouchHelper? = null
+//    private lateinit var list : List<SidePanelItem>
 
     private var _binding: FragmentLayersBinding? = null
     private val binding: FragmentLayersBinding
@@ -35,7 +31,7 @@ class LayersFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentLayersBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(requireActivity())[SidePanelViewModel::class.java]
-        viewModel.getItem()
+//        viewModel.setItems()
         return binding.root
     }
 
@@ -51,21 +47,21 @@ class LayersFragment : Fragment() {
         binding.apply {
             adapter = SidePanelAdapter(viewModel, viewLifecycleOwner)
 
-            CoroutineHelper.coroutineScope.launch{
-               val result =  async {
-                    viewModel.getItemFlow()
-                }
-                adapter.listItem = result.await()
-                Log.d("MyTag", result.await().toString())
-           }
-
-
             rcView.layoutManager = LinearLayoutManager(requireContext())
             rcView.adapter = adapter
+
+            viewModel.itemList.observe(viewLifecycleOwner) {
+//                list = it
+                adapter.listItem = it
+            }
+//            adapter.listItem = viewModel.item.getItems()
+
         }
 
+        /**
+         * прокрутка. Считаем количество элементов, не влезших в экран
+         */
         binding.rcView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val ll = binding.rcView.layoutManager as LinearLayoutManager
@@ -77,6 +73,47 @@ class LayersFragment : Fragment() {
                 )
             }
         })
+//
+//         touchHelper = ItemTouchHelper(object: ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP
+//                or ItemTouchHelper.DOWN, 0) {
+//            override fun onMove(
+//                recyclerView: RecyclerView,
+//                viewHolder: RecyclerView.ViewHolder,
+//                target: RecyclerView.ViewHolder,
+//            ): Boolean {
+//                val sourcePosition = viewHolder.absoluteAdapterPosition
+//                val targetPosition = target.bindingAdapterPosition
+//                Collections.swap(list, sourcePosition, targetPosition)
+//                return true
+//            }
+//
+//            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+//            }
+//
+//        })
+//        touchHelper?.attachToRecyclerView(binding.rcView)
+
+        /**
+         * реализация drag and drop
+         */
+
+
+
+        //удалить. неудачная попытка реализации перетаскивания
+//        binding.rcView.setOnDragListener( object : View.OnDragListener {
+//            override fun onDrag(view: View?, dragEvent: DragEvent?): Boolean {
+//                val action = dragEvent?.action
+//                when(action) {
+//                    DragEvent.ACTION_DRAG_LOCATION -> {
+//                        val viewOnTopOf = binding.rcView.findChildViewUnder(dragEvent.x, dragEvent.y)
+//                        val i = binding.rcView.getChildAdapterPosition(viewOnTopOf?.rootView!!)
+////                        listForAdapter.
+//                    }
+//                }
+//                return true
+//            }
+//        })
+
     }
 
     override fun onDestroy() {

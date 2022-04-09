@@ -29,7 +29,9 @@ class SidePanelAdapter(
             notifyDataSetChanged()
         }
 
-    class PanelHolder(view: View) : RecyclerView.ViewHolder(view) {
+
+
+    class PanelHolder(view: View, val viewModel: SidePanelViewModel) : RecyclerView.ViewHolder(view) {
 
 
         var isPanelTouched = false
@@ -51,6 +53,8 @@ class SidePanelAdapter(
             setClickListeners(binding, sidePanelItem, viewModel)
             setObservers(binding, sidePanelItem, viewModel, viewLifecycleOwner)
 
+
+
             imLineLogo.setImageResource(sidePanelItem.imageId)
             tvTitle.text = sidePanelItem.title
             val transparency = sidePanelItem.seekBar
@@ -65,6 +69,7 @@ class SidePanelAdapter(
                 layerOption.visibility = View.GONE
                 imArrow.setImageResource(R.drawable.ic_arrow)
             }
+
             when (sidePanelItem.switcher) {
                 true -> {
                     switcher.isChecked = true
@@ -72,6 +77,14 @@ class SidePanelAdapter(
                 }
                 false -> switcher.isChecked = false
                 else -> switcher.setButtonDrawable(R.drawable.ic_center_to_gps)
+            }
+
+            if (sidePanelItem.isActive) {
+                imInvisible.visibility = View.VISIBLE
+                mainPanel.alpha = 0.5F
+            } else {
+                imInvisible.visibility = View.GONE
+                mainPanel.alpha = 1F
             }
 
         }
@@ -83,15 +96,15 @@ class SidePanelAdapter(
         ) =
             with(binding) {
                 imArrow.setOnClickListener {
-                    openOptionPanel()
+                    openOptionPanel(item)
                 }
 
                 tvTitle.setOnClickListener {
-                    openOptionPanel()
+                    openOptionPanel(item)
                 }
 
                 tvTitle.setOnLongClickListener {
-                    deactivatePanel()
+                    deactivatePanel(item)
                     true
                 }
 
@@ -126,7 +139,7 @@ class SidePanelAdapter(
                 }
 
                 mainPanel.setOnLongClickListener {
-                    deactivatePanel()
+                    deactivatePanel(item)
                     true
                 }
 
@@ -153,8 +166,12 @@ class SidePanelAdapter(
                 switcher.setOnClickListener {
                     if (switcher.isChecked) {
                         viewModel.changeCount(plusSwitcher)
+                        val tempCopy = item.copy(switcher = true)
+                        viewModel.editItem(tempCopy)
                     } else {
                         viewModel.changeCount(minusSwitcher)
+                        val tempCopy = item.copy(switcher = false)
+                        viewModel.editItem(tempCopy)
                     }
                 }
 
@@ -175,25 +192,33 @@ class SidePanelAdapter(
 
         }
 
-        private fun deactivatePanel() = with(binding) {
-            if (isActive) {
+        private fun deactivatePanel(item: SidePanelItem) = with(binding) {
+            if (item.isActive) {
                 isActive = false
                 imInvisible.visibility = View.VISIBLE
                 mainPanel.alpha = 0.5F
+                val tempCopy = item.copy(isActive = false)
+                viewModel.editItem(tempCopy)
             } else {
                 isActive = true
                 imInvisible.visibility = View.GONE
                 mainPanel.alpha = 1F
+                val tempCopy = item.copy(isActive = true)
+                viewModel.editItem(tempCopy)
             }
         }
 
-        private fun openOptionPanel() = with(binding) {
+        private fun openOptionPanel(item: SidePanelItem) = with(binding) {
             if (layerOption.isVisible) {
                 layerOption.visibility = View.GONE
                 imArrow.setImageResource(R.drawable.ic_arrow)
+                val tempCopy = item.copy(isDetailOpen = false)
+                viewModel.editItem(tempCopy)
             } else {
                 layerOption.visibility = View.VISIBLE
                 imArrow.setImageResource(R.drawable.ic_arrow_up)
+                val tempCopy = item.copy(isDetailOpen = true)
+                viewModel.editItem(tempCopy)
             }
         }
     }
@@ -204,7 +229,7 @@ class SidePanelAdapter(
                 parent,
                 false
             )
-        return PanelHolder(view)
+        return PanelHolder(view, viewModel)
     }
 
     override fun onBindViewHolder(holder: PanelHolder, position: Int) {
@@ -213,7 +238,7 @@ class SidePanelAdapter(
             viewModel,
             viewLifecycleOwner
         )
-        Log.d("MyTag", "LListsize ${listItem.size}")
+        Log.d("MyTag", "reloaded list")
     }
 
     override fun getItemCount(): Int {

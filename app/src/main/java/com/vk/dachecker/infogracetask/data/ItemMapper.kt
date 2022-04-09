@@ -1,5 +1,6 @@
 package com.vk.dachecker.infogracetask.data
 
+import com.vk.dachecker.infogracetask.data.entity.ItemDbModel
 import com.vk.dachecker.infogracetask.domain.SidePanelItem
 
 class ItemMapper {
@@ -17,7 +18,6 @@ class ItemMapper {
         amount = item.amount,
         zoom1 = item.zoom1,
         zoom2 = item.zoom2
-
     )
 
     fun mapDbModelToEntity(itemDbModel: ItemDbModel) = SidePanelItem(

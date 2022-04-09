@@ -6,10 +6,8 @@ import androidx.lifecycle.*
 import com.vk.dachecker.infogracetask.SidePanelItemFactory
 import com.vk.dachecker.infogracetask.data.ListItemRepositoryImpl
 import com.vk.dachecker.infogracetask.domain.*
+import com.vk.dachecker.infogracetask.domain.usecase.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.toList
 import kotlin.properties.Delegates
 
 class SidePanelViewModel(application: Application) : AndroidViewModel(application) {
@@ -19,9 +17,12 @@ class SidePanelViewModel(application: Application) : AndroidViewModel(applicatio
     private val getItemUseCase = GetItemUseCase(repository)
     private val getListItemUseCase = GetListItemUseCase(repository)
     private val addItemUseCase = AddItemUseCase(repository)
+//    private val getInfoUseCase = GetInfoUseCase(repository)
 
-    private val item = SidePanelItemFactory(application) //доступ к производству элементов
-    private var counter by Delegates.notNull<Int>() //счетчик общего переключателя
+    val itemList = getListItemUseCase.getItemList()
+
+     val item = SidePanelItemFactory(application) //доступ к производству элементов
+    private var counter = MutableLiveData<Int>(0) //счетчик общего переключателя
 
     private val _switcherManager =
         MutableLiveData<Boolean>() //главный переключатель, на него подписаны все переключатели элементов
@@ -39,7 +40,7 @@ class SidePanelViewModel(application: Application) : AndroidViewModel(applicatio
         get() = _invisibleElements
 
     private val _elements =
-        MutableLiveData<List<SidePanelItem>>() //список всех элементов, подключен к БД
+        MutableLiveData<List<SidePanelItem>>(emptyList()) //список всех элементов, подключен к БД
     val elements: LiveData<List<SidePanelItem>>
         get() = _elements
 
@@ -48,50 +49,41 @@ class SidePanelViewModel(application: Application) : AndroidViewModel(applicatio
         get() = _elementItem
 
     //метод сохранения изменений в элементе, запись изменений в БД
-    fun editItem(itemId: Int, switcher: Boolean, isActive: Boolean, isDetailOpen: Boolean) {
+    fun editItem(copyForReplace : SidePanelItem) {
         viewModelScope.launch {
-            _elementItem.value?.let {
-                val tempCopy =
-                    it.copy(switcher = switcher, isActive = isActive, isDetailOpen = isDetailOpen)
-                editItemUseCase.editItem(tempCopy)
-            }
+            editItemUseCase.editItem(copyForReplace)
         }
     }
+
+//    fun setItems() {
+//        viewModelScope.launch {
+//            if(_elements.value.isNullOrEmpty()) {
+//                val tempList = item.getItems()
+//                tempList.forEach {
+//                    addItemUseCase.addItem(it)
+//                }
+//                val list = itemList.value
+//                _elements.postValue(list!!)
+//                counter = tempList.size
+//            } else {
+//                counter = itemList.value?.size!!
+//
+//            }
+//        }
+//    }
 
     //метод изменения статуса переключателей
     fun changeSwitcherStatus() {
         _switcherManager.value = _switcherManager.value != true
     }
 
-    //костыль. получение элементов для ресайклера
-    fun getItemFirst(): List<SidePanelItem> {
-        val tempList = item.getItems()
-        counter = tempList.size
-        return item.getItems()
-    }
-
-    fun getItem() {
-        viewModelScope.launch  {
-            val list : List<SidePanelItem>? = _elements.value
-            if(!list.isNullOrEmpty()) {
-                val tempList = item.getItems()
-                tempList.forEach {
-                    addItemUseCase.addItem(it)
-                }
-            }
-            _elements.value = getListItemUseCase.getItemList().value
-        }
-    }
-
     suspend fun getItemFlow(): List<SidePanelItem> {
         val res = CompletableDeferred<List<SidePanelItem>>()
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             if (_elements.value.isNullOrEmpty()) {
-                val tempList = item.getItems()
-                tempList.forEach {
-                    addItemUseCase.addItem(it)
-                }
-                 res.complete(getListItemUseCase.getItemList().value!!) //прилетает null
+                _elements.postValue(itemList.value)
+                delay(1000)
+                res.complete(_elements.value!!) // value
             } else {
                 res.complete(_elements.value!!)
             }
@@ -103,7 +95,7 @@ class SidePanelViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun changeCount(i: Int) {
         _count.value = _count.value?.plus(i)
-        if (_count.value == counter) {
+        if (_count.value == counter.value) {
             _switcherManager.value = true
         } else if (_count.value == 0) {
             _switcherManager.value = false
@@ -111,8 +103,13 @@ class SidePanelViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun amountVisibleElements(first: Int, last: Int, firstVisible: Int, lastVisible: Int) {
-        _invisibleElements.value = counter - (lastVisible - firstVisible)
+        _invisibleElements.value = counter.value?.minus((lastVisible - firstVisible))
     }
+
+//    fun searchInfo(text : String) {
+//       val resultSearch = getInfoUseCase.getInfo(text)
+//        Log.d("Search", "Search is ${resultSearch.value}")
+//    }
 
 
 }

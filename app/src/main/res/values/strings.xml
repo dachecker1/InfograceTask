@@ -20,4 +20,8 @@
     <string name="tab_missions">Миссии</string>
     <string name="tab_count_visible_elements">Невидимых элементов: %d</string>
 
+<!--    search dialog-->
+    <string name="dialog_title">Начни что-то искать</string>
+    <string name="dialog_search">Мне повезёт!</string>
+
 </resources>

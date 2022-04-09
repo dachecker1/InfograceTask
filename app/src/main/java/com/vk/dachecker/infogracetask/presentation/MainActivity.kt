@@ -8,12 +8,14 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.vk.dachecker.infogracetask.R
 import com.vk.dachecker.infogracetask.databinding.ActivityMainBinding
+import com.vk.dachecker.infogracetask.domain.DialogHelper
 
 class MainActivity : FragmentActivity() {
     private lateinit var viewModel : SidePanelViewModel
     private lateinit var adapter: NumberAdapter
     private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabLayout
+//    private val dialogHelper = DialogHelper(this, viewModel)
     private var _binding: ActivityMainBinding? = null
     private val binding: ActivityMainBinding
         get() = _binding ?: throw RuntimeException("ActivityMainBinding == null")
@@ -42,6 +44,10 @@ class MainActivity : FragmentActivity() {
         binding.bottomMenuSwitcher.setOnClickListener {
             viewModel.changeSwitcherStatus()
         }
+
+//        binding.btnSearch.setOnClickListener {
+//            dialogHelper.createDialog()
+//        }
     }
 
     private fun setObservers() = with(viewModel){

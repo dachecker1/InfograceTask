@@ -1,4 +1,7 @@
-package com.vk.dachecker.infogracetask.domain
+package com.vk.dachecker.infogracetask.domain.usecase
+
+import com.vk.dachecker.infogracetask.domain.ItemRepository
+import com.vk.dachecker.infogracetask.domain.SidePanelItem
 
 class GetItemUseCase(private val itemRepository: ItemRepository) {
 
