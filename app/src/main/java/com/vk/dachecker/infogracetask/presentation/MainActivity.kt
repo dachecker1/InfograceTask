@@ -1,14 +1,16 @@
-package com.vk.dachecker.infogracetask
+package com.vk.dachecker.infogracetask.presentation
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.vk.dachecker.infogracetask.R
 import com.vk.dachecker.infogracetask.databinding.ActivityMainBinding
 
 class MainActivity : FragmentActivity() {
+    private lateinit var viewModel : SidePanelViewModel
     private lateinit var adapter: NumberAdapter
     private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabLayout
@@ -21,8 +23,37 @@ class MainActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        viewModel = ViewModelProvider(this)[SidePanelViewModel::class.java]
 
         initViewPager()
+        setObservers()
+        setClickListeners()
+        fillActivity()
+    }
+
+    private fun fillActivity(){
+        binding.tvCountVisible.text = getString(
+            R.string.tab_count_visible_elements,
+            viewModel.invisibleElements.value
+        )
+    }
+
+    private fun setClickListeners() {
+        binding.bottomMenuSwitcher.setOnClickListener {
+            viewModel.changeSwitcherStatus()
+        }
+    }
+
+    private fun setObservers() = with(viewModel){
+        switcherManager.observe(this@MainActivity) {
+            binding.bottomMenuSwitcher.isChecked = it
+        }
+
+        invisibleElements.observe(this@MainActivity) {
+            binding.tvCountVisible.text = getString(R.string.tab_count_visible_elements, it)
+        }
+
+
     }
 
     private fun initViewPager() {

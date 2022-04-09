@@ -1,7 +1,6 @@
-package com.vk.dachecker.infogracetask
+package com.vk.dachecker.infogracetask.presentation
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
@@ -12,53 +11,46 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.core.text.bold
 import androidx.core.view.isVisible
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
+import com.vk.dachecker.infogracetask.R
 import com.vk.dachecker.infogracetask.databinding.ToolPositionBinding
+import com.vk.dachecker.infogracetask.domain.SidePanelItem
 
 
-class SidePanelAdapter() : RecyclerView.Adapter<SidePanelAdapter.PanelHolder>() {
-    var listItem = ArrayList<SidePanelItem>()
+class SidePanelAdapter(
+    private val viewModel: SidePanelViewModel,
+    private val viewLifecycleOwner: LifecycleOwner,
+) : RecyclerView.Adapter<SidePanelAdapter.PanelHolder>() {
 
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        super.onAttachedToRecyclerView(recyclerView)
-        val manager = recyclerView.layoutManager
-        if (manager is LinearLayoutManager && itemCount > 0) {
-            val llm = manager
-            recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    val visiblePosition = llm.findFirstCompletelyVisibleItemPosition()
-                    if (visiblePosition > -1) {
-                        val v = llm.findViewByPosition(visiblePosition)
-                        //do something
-                        val first = llm.findFirstVisibleItemPosition()
-                        val last = llm.findLastVisibleItemPosition()
-                        val firstVisible = llm.findFirstCompletelyVisibleItemPosition()
-                        val lastVisible = llm.findLastCompletelyVisibleItemPosition()
-
-                        Log.d("MyTag", "Элемент ${first}")
-                        Log.d("MyTag", "Элемент ${last}")
-                        Log.d("MyTag", "Элемент ${firstVisible}")
-                        Log.d("MyTag", "Элемент ${lastVisible}")
-
-                        v!!.setBackgroundColor(Color.parseColor("#777777"))
-                    }
-                }
-            })
+    var listItem = listOf<SidePanelItem>()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
         }
-    }
-
 
     class PanelHolder(view: View) : RecyclerView.ViewHolder(view) {
+
+
         var isPanelTouched = false
         var isActive = true
+        private val plusSwitcher = 1
+        private val minusSwitcher = -1
 
         private val binding = ToolPositionBinding.bind(view)
 
         @SuppressLint("StringFormatInvalid", "StringFormatMatches")
-        fun bind(sidePanelItem: SidePanelItem) = with(binding) {
+        fun bind(
+            sidePanelItem: SidePanelItem,
+            viewModel: SidePanelViewModel,
+            viewLifecycleOwner: LifecycleOwner,
+        ) = with(binding) {
+
+
+
+            setClickListeners(binding, sidePanelItem, viewModel)
+            setObservers(binding, sidePanelItem, viewModel, viewLifecycleOwner)
+
             imLineLogo.setImageResource(sidePanelItem.imageId)
             tvTitle.text = sidePanelItem.title
             val transparency = sidePanelItem.seekBar
@@ -74,17 +66,21 @@ class SidePanelAdapter() : RecyclerView.Adapter<SidePanelAdapter.PanelHolder>() 
                 imArrow.setImageResource(R.drawable.ic_arrow)
             }
             when (sidePanelItem.switcher) {
-                true -> switcher.isChecked = true
+                true -> {
+                    switcher.isChecked = true
+                    viewModel.changeCount(plusSwitcher)
+                }
                 false -> switcher.isChecked = false
                 else -> switcher.setButtonDrawable(R.drawable.ic_center_to_gps)
             }
 
-            setClickListeners(binding, sidePanelItem)
-
-
         }
 
-        private fun setClickListeners(binding: ToolPositionBinding, item: SidePanelItem) =
+        private fun setClickListeners(
+            binding: ToolPositionBinding,
+            item: SidePanelItem,
+            viewModel: SidePanelViewModel,
+        ) =
             with(binding) {
                 imArrow.setOnClickListener {
                     openOptionPanel()
@@ -94,7 +90,7 @@ class SidePanelAdapter() : RecyclerView.Adapter<SidePanelAdapter.PanelHolder>() 
                     openOptionPanel()
                 }
 
-                tvTitle.setOnLongClickListener  {
+                tvTitle.setOnLongClickListener {
                     deactivatePanel()
                     true
                 }
@@ -129,27 +125,58 @@ class SidePanelAdapter() : RecyclerView.Adapter<SidePanelAdapter.PanelHolder>() 
                     }
                 }
 
-                mainPanel.setOnLongClickListener  {
+                mainPanel.setOnLongClickListener {
                     deactivatePanel()
                     true
                 }
 
 
                 seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                    override fun onProgressChanged(seek: SeekBar?, progress: Int, fromUser: Boolean) {
-                        binding.tvTransparency.text = root.context.getString(R.string.sloy_transparency, progress)
+                    override fun onProgressChanged(
+                        seek: SeekBar?,
+                        progress: Int,
+                        fromUser: Boolean,
+                    ) {
+                        binding.tvTransparency.text =
+                            root.context.getString(R.string.sloy_transparency, progress)
                     }
+
                     override fun onStartTrackingTouch(seek: SeekBar?) {
 
                     }
+
                     override fun onStopTrackingTouch(seek: SeekBar?) {
 
                     }
-                } )
+                })
+
+                switcher.setOnClickListener {
+                    if (switcher.isChecked) {
+                        viewModel.changeCount(plusSwitcher)
+                    } else {
+                        viewModel.changeCount(minusSwitcher)
+                    }
+                }
+
+
             }
 
-        private fun deactivatePanel() = with(binding){
-            if(isActive){
+        private fun setObservers(
+            binding: ToolPositionBinding,
+            item: SidePanelItem,
+            viewModel: SidePanelViewModel,
+            viewLifecycleOwner: LifecycleOwner,
+        ) {
+
+            viewModel.switcherManager.observe(viewLifecycleOwner) {
+                binding.switcher.isChecked = it
+            }
+
+
+        }
+
+        private fun deactivatePanel() = with(binding) {
+            if (isActive) {
                 isActive = false
                 imInvisible.visibility = View.VISIBLE
                 mainPanel.alpha = 0.5F
@@ -172,13 +199,21 @@ class SidePanelAdapter() : RecyclerView.Adapter<SidePanelAdapter.PanelHolder>() 
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PanelHolder {
-        val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.tool_position, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(
+            R.layout.tool_position,
+                parent,
+                false
+            )
         return PanelHolder(view)
     }
 
     override fun onBindViewHolder(holder: PanelHolder, position: Int) {
-        holder.bind(listItem[position])
+        holder.bind(
+            listItem[position],
+            viewModel,
+            viewLifecycleOwner
+        )
+        Log.d("MyTag", "LListsize ${listItem.size}")
     }
 
     override fun getItemCount(): Int {

@@ -18,4 +18,6 @@
     <string name="tab_layer">Слои</string>
     <string name="tab_podlozhki">Подложки</string>
     <string name="tab_missions">Миссии</string>
+    <string name="tab_count_visible_elements">Невидимых элементов: %d</string>
+
 </resources>

@@ -1,4 +1,4 @@
-package com.vk.dachecker.infogracetask
+package com.vk.dachecker.infogracetask.presentation
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
