@@ -14,13 +14,13 @@ import org.jetbrains.annotations.NotNull
 interface ItemListDao {
 
     @Query("SELECT * FROM item")
-    fun getItemsList() : List<ItemDbModel>
+    suspend fun getItemsList() : List<ItemDbModel>
 
     @Query("SELECT * FROM item")
     fun getItemsListLiveData() : LiveData<List<ItemDbModel>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addItem(itemDbModel: ItemDbModel)
+    suspend fun addItem(itemDbModel: ItemDbModel)
 
     @Query("DELETE FROM item WHERE id=:itemId")
     suspend fun deleteItem(itemId : Int)

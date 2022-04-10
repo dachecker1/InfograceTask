@@ -35,7 +35,6 @@ class SidePanelAdapter(
 
 
         var isPanelTouched = false
-        var isActive = true
         private val plusSwitcher = 1
         private val minusSwitcher = -1
 
@@ -68,6 +67,9 @@ class SidePanelAdapter(
             if (!sidePanelItem.isDetailOpen) {
                 layerOption.visibility = View.GONE
                 imArrow.setImageResource(R.drawable.ic_arrow)
+            } else {
+                layerOption.visibility = View.VISIBLE
+                imArrow.setImageResource(R.drawable.ic_arrow_up)
             }
 
             when (sidePanelItem.switcher) {
@@ -86,8 +88,8 @@ class SidePanelAdapter(
                 imInvisible.visibility = View.GONE
                 mainPanel.alpha = 1F
             }
-
         }
+
 
         private fun setClickListeners(
             binding: ToolPositionBinding,
@@ -96,15 +98,15 @@ class SidePanelAdapter(
         ) =
             with(binding) {
                 imArrow.setOnClickListener {
-                    openOptionPanel(item)
+                    viewModel.editItem(item, SidePanelViewModel.ElementChange.IsDetailOpen)
                 }
 
                 tvTitle.setOnClickListener {
-                    openOptionPanel(item)
+                    viewModel.editItem(item, SidePanelViewModel.ElementChange.IsDetailOpen)
                 }
 
                 tvTitle.setOnLongClickListener {
-                    deactivatePanel(item)
+                    viewModel.editItem(item, SidePanelViewModel.ElementChange.IsActive)
                     true
                 }
 
@@ -115,7 +117,7 @@ class SidePanelAdapter(
                         val color = root.resources.getColor(R.color.green)
                         isPanelTouched = false
                         binding.apply {
-//                        imLineLogo.   <- изменить цвет иконки!!! КАК?
+                        imLineLogo.colorFilter = null
                             s.bold { append(item.title) }
                             s.setSpan(ForegroundColorSpan(color),
                                 0, item.title.length,
@@ -127,7 +129,7 @@ class SidePanelAdapter(
                         val color = root.resources.getColor(R.color.white)
                         isPanelTouched = true
                         binding.apply {
-//                        imLineLogo.   <- изменить цвет иконки!!! КАК?
+                        imLineLogo.setColorFilter(R.color.green)
                             s.append(item.title)
                             s.setSpan(ForegroundColorSpan(color),
                                 0, item.title.length,
@@ -139,7 +141,7 @@ class SidePanelAdapter(
                 }
 
                 mainPanel.setOnLongClickListener {
-                    deactivatePanel(item)
+                    viewModel.editItem(item, SidePanelViewModel.ElementChange.IsActive)
                     true
                 }
 
@@ -166,12 +168,10 @@ class SidePanelAdapter(
                 switcher.setOnClickListener {
                     if (switcher.isChecked) {
                         viewModel.changeCount(plusSwitcher)
-                        val tempCopy = item.copy(switcher = true)
-                        viewModel.editItem(tempCopy)
+                        viewModel.editItem(item, SidePanelViewModel.ElementChange.IsSwitcherActive)
                     } else {
                         viewModel.changeCount(minusSwitcher)
-                        val tempCopy = item.copy(switcher = false)
-                        viewModel.editItem(tempCopy)
+                        viewModel.editItem(item, SidePanelViewModel.ElementChange.IsSwitcherActive)
                     }
                 }
 
@@ -190,36 +190,6 @@ class SidePanelAdapter(
             }
 
 
-        }
-
-        private fun deactivatePanel(item: SidePanelItem) = with(binding) {
-            if (item.isActive) {
-                isActive = false
-                imInvisible.visibility = View.VISIBLE
-                mainPanel.alpha = 0.5F
-                val tempCopy = item.copy(isActive = false)
-                viewModel.editItem(tempCopy)
-            } else {
-                isActive = true
-                imInvisible.visibility = View.GONE
-                mainPanel.alpha = 1F
-                val tempCopy = item.copy(isActive = true)
-                viewModel.editItem(tempCopy)
-            }
-        }
-
-        private fun openOptionPanel(item: SidePanelItem) = with(binding) {
-            if (layerOption.isVisible) {
-                layerOption.visibility = View.GONE
-                imArrow.setImageResource(R.drawable.ic_arrow)
-                val tempCopy = item.copy(isDetailOpen = false)
-                viewModel.editItem(tempCopy)
-            } else {
-                layerOption.visibility = View.VISIBLE
-                imArrow.setImageResource(R.drawable.ic_arrow_up)
-                val tempCopy = item.copy(isDetailOpen = true)
-                viewModel.editItem(tempCopy)
-            }
         }
     }
 
