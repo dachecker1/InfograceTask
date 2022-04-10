@@ -1,9 +1,5 @@
 package com.vk.dachecker.infogracetask.domain
 
-import androidx.room.Database
-import com.vk.dachecker.infogracetask.data.entity.ItemDbModel
-
-
 data class SidePanelItem(
     val id: Int = UNDEFINED_ID,
     val itemId: Int,

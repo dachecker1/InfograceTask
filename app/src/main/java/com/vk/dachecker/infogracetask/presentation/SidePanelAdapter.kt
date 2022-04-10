@@ -10,13 +10,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.core.text.bold
-import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.vk.dachecker.infogracetask.R
 import com.vk.dachecker.infogracetask.databinding.ToolPositionBinding
 import com.vk.dachecker.infogracetask.domain.SidePanelItem
-import kotlin.math.min
 
 
 class SidePanelAdapter(
@@ -30,10 +28,7 @@ class SidePanelAdapter(
             notifyDataSetChanged()
         }
 
-
-
-    class PanelHolder(view: View, val viewModel: SidePanelViewModel) : RecyclerView.ViewHolder(view) {
-
+    class PanelHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         var isPanelTouched = false
         private val plusSwitcher = 1
@@ -89,7 +84,6 @@ class SidePanelAdapter(
             }
         }
 
-
         private fun setClickListeners(
             binding: ToolPositionBinding,
             item: SidePanelItem,
@@ -144,7 +138,6 @@ class SidePanelAdapter(
                     true
                 }
 
-
                 seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                     override fun onProgressChanged(
                         seek: SeekBar?,
@@ -155,13 +148,9 @@ class SidePanelAdapter(
                             root.context.getString(R.string.sloy_transparency, progress)
                     }
 
-                    override fun onStartTrackingTouch(seek: SeekBar?) {
+                    override fun onStartTrackingTouch(seek: SeekBar?) {}
 
-                    }
-
-                    override fun onStopTrackingTouch(seek: SeekBar?) {
-
-                    }
+                    override fun onStopTrackingTouch(seek: SeekBar?) {}
                 })
 
                 switcher.setOnClickListener {
@@ -185,8 +174,6 @@ class SidePanelAdapter(
             viewModel.switcherManager.observe(viewLifecycleOwner) {
                 binding.switcher.isChecked = it
             }
-
-
         }
     }
 
@@ -196,7 +183,7 @@ class SidePanelAdapter(
                 parent,
                 false
             )
-        return PanelHolder(view, viewModel)
+        return PanelHolder(view)
     }
 
     override fun onBindViewHolder(holder: PanelHolder, position: Int) {

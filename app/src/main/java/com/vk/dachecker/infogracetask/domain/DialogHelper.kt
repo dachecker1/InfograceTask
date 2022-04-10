@@ -22,7 +22,6 @@ class DialogHelper(activity: MainActivity, private val viewModel: SidePanelViewM
             } else {
                 Toast.makeText(act, "Продуктолог придумает, что сюда написать", Toast.LENGTH_LONG).show()
             }
-
         }
         dialog.show()
     }
