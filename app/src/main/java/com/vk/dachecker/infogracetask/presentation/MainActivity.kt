@@ -15,7 +15,7 @@ class MainActivity : FragmentActivity() {
     private lateinit var adapter: NumberAdapter
     private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabLayout
-//    private val dialogHelper = DialogHelper(this, viewModel)
+    private lateinit var dialogHelper : DialogHelper
     private var _binding: ActivityMainBinding? = null
     private val binding: ActivityMainBinding
         get() = _binding ?: throw RuntimeException("ActivityMainBinding == null")
@@ -45,9 +45,10 @@ class MainActivity : FragmentActivity() {
             viewModel.changeSwitcherStatus()
         }
 
-//        binding.btnSearch.setOnClickListener {
-//            dialogHelper.createDialog()
-//        }
+        binding.btnSearch.setOnClickListener {
+            dialogHelper = DialogHelper(this, viewModel)
+            dialogHelper.createDialog()
+        }
     }
 
     private fun setObservers() = with(viewModel){

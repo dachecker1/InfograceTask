@@ -11,7 +11,7 @@ data class SidePanelItem(
     val title: String,
     val isDetailOpen: Boolean,
     val isActive: Boolean,
-    val switcher: Boolean?,
+    val switcher: Boolean,
     val synchronization: String,
     val seekBar: Int,
     val amount: Int,

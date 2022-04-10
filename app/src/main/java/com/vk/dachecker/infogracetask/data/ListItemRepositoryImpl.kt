@@ -28,10 +28,11 @@ class ListItemRepositoryImpl(val application: Application) : ItemRepository {
     }
 
     override fun getListItem(): LiveData<List<SidePanelItem>> {
+        GlobalScope.launch {
         val list = listDao.getItemsList()
         if (list.isNullOrEmpty()) {
             val factory = SidePanelItemFactory(application)
-            GlobalScope.launch {
+
                 factory.getItems().forEach {
                     addItem(it)
                 }

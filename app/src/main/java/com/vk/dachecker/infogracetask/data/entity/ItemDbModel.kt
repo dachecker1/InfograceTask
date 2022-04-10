@@ -20,7 +20,7 @@ data class ItemDbModel(
     @ColumnInfo (name = "isActive")
     val isActive: Boolean,
     @ColumnInfo (name = "switcher")
-    val switcher : Boolean?,
+    val switcher : Boolean,
     @ColumnInfo (name = "synchronization")
     val synchronization : String,
     @ColumnInfo (name = "seekBar")
