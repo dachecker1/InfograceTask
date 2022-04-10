@@ -17,7 +17,7 @@ class DialogHelper(activity: MainActivity, private val viewModel: SidePanelViewM
         binding.btnSearch.setOnClickListener {
             val enteredText =  binding.edSearch.text
             if (enteredText != null && enteredText.length > 2) {
-//                viewModel.searchInfo(enteredText.toString())
+                viewModel.searchInfo(enteredText.toString())
                 dialog.dismiss()
             } else {
                 Toast.makeText(act, "Продуктолог придумает, что сюда написать", Toast.LENGTH_LONG).show()

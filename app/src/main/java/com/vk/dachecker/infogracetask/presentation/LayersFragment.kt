@@ -53,8 +53,9 @@ class LayersFragment : Fragment() {
             viewModel.itemList.observe(viewLifecycleOwner) {
 //                list = it
                 adapter.listItem = it
+                viewModel.setCounter(it.size)
             }
-//            adapter.listItem = viewModel.item.getItems()
+
 
         }
 

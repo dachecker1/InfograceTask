@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.vk.dachecker.infogracetask.R
 import com.vk.dachecker.infogracetask.databinding.ToolPositionBinding
 import com.vk.dachecker.infogracetask.domain.SidePanelItem
+import kotlin.math.min
 
 
 class SidePanelAdapter(
@@ -47,12 +48,8 @@ class SidePanelAdapter(
             viewLifecycleOwner: LifecycleOwner,
         ) = with(binding) {
 
-
-
             setClickListeners(binding, sidePanelItem, viewModel)
             setObservers(binding, sidePanelItem, viewModel, viewLifecycleOwner)
-
-
 
             imLineLogo.setImageResource(sidePanelItem.imageId)
             tvTitle.text = sidePanelItem.title
@@ -77,8 +74,10 @@ class SidePanelAdapter(
                     switcher.isChecked = true
                     viewModel.changeCount(plusSwitcher)
                 }
-                false -> switcher.isChecked = false
-                else -> switcher.setButtonDrawable(R.drawable.ic_center_to_gps)
+                false -> {
+                    switcher.isChecked = false
+                    viewModel.changeCount(minusSwitcher)
+                }
             }
 
             if (sidePanelItem.isActive) {
@@ -167,10 +166,8 @@ class SidePanelAdapter(
 
                 switcher.setOnClickListener {
                     if (switcher.isChecked) {
-                        viewModel.changeCount(plusSwitcher)
                         viewModel.editItem(item, SidePanelViewModel.ElementChange.IsSwitcherActive)
                     } else {
-                        viewModel.changeCount(minusSwitcher)
                         viewModel.editItem(item, SidePanelViewModel.ElementChange.IsSwitcherActive)
                     }
                 }
