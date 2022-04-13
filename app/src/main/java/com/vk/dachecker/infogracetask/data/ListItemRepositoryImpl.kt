@@ -1,19 +1,15 @@
 package com.vk.dachecker.infogracetask.data
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.map
 import com.vk.dachecker.infogracetask.SidePanelItemFactory
 import com.vk.dachecker.infogracetask.domain.ItemRepository
 import com.vk.dachecker.infogracetask.domain.SidePanelItem
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-class ListItemRepositoryImpl(val application: Application) : ItemRepository {
+class ListItemRepositoryImpl(private val application: Application) : ItemRepository {
 
     private val listDao = ItemsDataBase.getInstance(application).listDao()
     private val mapper = ItemMapper()
