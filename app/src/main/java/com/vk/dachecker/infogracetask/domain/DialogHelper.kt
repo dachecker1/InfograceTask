@@ -20,7 +20,10 @@ class DialogHelper(activity: MainActivity, private val viewModel: SidePanelViewM
                 viewModel.searchInfo(enteredText.toString())
                 dialog.dismiss()
             } else {
-                Toast.makeText(act, "Продуктолог придумает, что сюда написать", Toast.LENGTH_LONG).show()
+                Toast.makeText(act, "Продуктолог придумает, что сюда написать", Toast.LENGTH_LONG)
+                    .show()
+                viewModel.searchInfo("возврат")
+                dialog.dismiss()
             }
         }
         dialog.show()
