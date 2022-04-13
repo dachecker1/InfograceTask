@@ -1,12 +1,15 @@
 package com.vk.dachecker.infogracetask.presentation
 
 import android.app.Application
-import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.vk.dachecker.infogracetask.data.ListItemRepositoryImpl
-import com.vk.dachecker.infogracetask.domain.*
-import com.vk.dachecker.infogracetask.domain.usecase.*
-import kotlinx.coroutines.*
+import com.vk.dachecker.infogracetask.domain.SidePanelItem
+import com.vk.dachecker.infogracetask.domain.usecase.EditItemUseCase
+import com.vk.dachecker.infogracetask.domain.usecase.GetListItemUseCase
+import kotlinx.coroutines.launch
 
 class SidePanelViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -33,6 +36,12 @@ class SidePanelViewModel(application: Application) : AndroidViewModel(applicatio
         MutableLiveData<Int>() //считает количество элементов, которые не влезли в экран
     val invisibleElements: LiveData<Int>
         get() = _invisibleElements
+
+    //отфильтрованные элементы
+    private val _filteredItems = MutableLiveData<List<SidePanelItem>>()
+    val filtered: LiveData<List<SidePanelItem>>
+        get() = _filteredItems
+
 
     //устанавливает количество невидимых элементов
     fun setCounter(i: Int) {
@@ -81,10 +90,16 @@ class SidePanelViewModel(application: Application) : AndroidViewModel(applicatio
         _invisibleElements.value = counter.value?.minus((lastVisible - firstVisible))
     }
 
-    fun searchInfo(text : String) {
-       itemList.value?.filter {
-           it.title.contains(text,ignoreCase = true)
-       }
+    fun searchInfo(text: String) {
+        val list = itemList.value?.filter { s ->
+            s.title.contains(text, ignoreCase = true)
+        }
+        if (!list.isNullOrEmpty()) {
+            _filteredItems.value = list!!
+        } else {
+            _filteredItems.value = itemList.value
+        }
+
     }
 
     sealed class ElementChange {

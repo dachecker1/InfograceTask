@@ -1,7 +1,9 @@
 package com.vk.dachecker.infogracetask.presentation
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -44,6 +46,10 @@ class LayersFragment : Fragment() {
             viewModel.itemList.observe(viewLifecycleOwner) {
                 adapter.listItem = it
                 viewModel.setCounter(it.size)
+            }
+
+            viewModel.filtered.observe(viewLifecycleOwner) {
+                adapter.listItem = it
             }
         }
 
