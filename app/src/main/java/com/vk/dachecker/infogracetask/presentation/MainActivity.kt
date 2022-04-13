@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.vk.dachecker.infogracetask.R
 import com.vk.dachecker.infogracetask.databinding.ActivityMainBinding
@@ -64,7 +63,7 @@ class MainActivity : FragmentActivity() {
 
     private fun initViewPager() {
         adapter = NumberAdapter(this)
-        viewPager = findViewById(R.id.pager) //переделать на binding
+        viewPager = binding.pager
         viewPager.adapter = adapter
         val tabNames: Array<String> = arrayOf(
             resources.getString(R.string.tab_layer),
