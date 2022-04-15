@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.core.text.bold
 import androidx.lifecycle.LifecycleOwner
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.vk.dachecker.infogracetask.R
 import com.vk.dachecker.infogracetask.databinding.ToolPositionBinding
@@ -24,8 +25,10 @@ class SidePanelAdapter(
 
     var listItem = listOf<SidePanelItem>()
         set(value) {
+            val callback = SidePanelElementDiffCallback(listItem, value)
+            val diffResult = DiffUtil.calculateDiff(callback)
+            diffResult.dispatchUpdatesTo(this)
             field = value
-            notifyDataSetChanged()
         }
 
     class PanelHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -160,8 +163,6 @@ class SidePanelAdapter(
                         viewModel.editItem(item, SidePanelViewModel.ElementChange.IsSwitcherActive)
                     }
                 }
-
-
             }
 
         private fun setObservers(
