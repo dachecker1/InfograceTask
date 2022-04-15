@@ -49,7 +49,7 @@ class SidePanelViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     //метод сохранения изменений в элементе, запись изменений в БД
-    fun editItem(item: SidePanelItem, change: ElementChange) {
+    fun editItem(item: SidePanelItem, change: ElementChange, progress: Int) {
         when (change) {
             ElementChange.IsDetailOpen -> {
                 val temp = item.copy(isDetailOpen = !item.isDetailOpen)
@@ -65,6 +65,13 @@ class SidePanelViewModel(application: Application) : AndroidViewModel(applicatio
             }
             ElementChange.IsSwitcherActive -> {
                 val temp = item.copy(switcher = !item.switcher!!) // значение может быть null
+                viewModelScope.launch {
+                    editItemUseCase.editItem(temp)
+                }
+            }
+
+            ElementChange.TransparencyLevel -> {
+                val temp = item.copy(seekBar = progress)
                 viewModelScope.launch {
                     editItemUseCase.editItem(temp)
                 }
@@ -106,5 +113,6 @@ class SidePanelViewModel(application: Application) : AndroidViewModel(applicatio
         object IsDetailOpen : ElementChange()
         object IsActive : ElementChange()
         object IsSwitcherActive : ElementChange()
+        object TransparencyLevel : ElementChange()
     }
 }

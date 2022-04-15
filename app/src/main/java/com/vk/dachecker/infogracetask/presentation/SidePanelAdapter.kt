@@ -94,15 +94,15 @@ class SidePanelAdapter(
         ) =
             with(binding) {
                 imArrow.setOnClickListener {
-                    viewModel.editItem(item, SidePanelViewModel.ElementChange.IsDetailOpen)
+                    viewModel.editItem(item, SidePanelViewModel.ElementChange.IsDetailOpen, 0)
                 }
 
                 tvTitle.setOnClickListener {
-                    viewModel.editItem(item, SidePanelViewModel.ElementChange.IsDetailOpen)
+                    viewModel.editItem(item, SidePanelViewModel.ElementChange.IsDetailOpen, 0)
                 }
 
                 tvTitle.setOnLongClickListener {
-                    viewModel.editItem(item, SidePanelViewModel.ElementChange.IsActive)
+                    viewModel.editItem(item, SidePanelViewModel.ElementChange.IsActive, 0)
                     true
                 }
 
@@ -137,7 +137,7 @@ class SidePanelAdapter(
                 }
 
                 mainPanel.setOnLongClickListener {
-                    viewModel.editItem(item, SidePanelViewModel.ElementChange.IsActive)
+                    viewModel.editItem(item, SidePanelViewModel.ElementChange.IsActive, 0)
                     true
                 }
 
@@ -153,14 +153,25 @@ class SidePanelAdapter(
 
                     override fun onStartTrackingTouch(seek: SeekBar?) {}
 
-                    override fun onStopTrackingTouch(seek: SeekBar?) {}
+                    override fun onStopTrackingTouch(seek: SeekBar?) {
+                        if (seek != null) {
+                            viewModel.editItem(item,
+                                SidePanelViewModel.ElementChange.TransparencyLevel,
+                                seek.progress)
+                        }
+
+                    }
                 })
 
                 switcher.setOnClickListener {
                     if (switcher.isChecked) {
-                        viewModel.editItem(item, SidePanelViewModel.ElementChange.IsSwitcherActive)
+                        viewModel.editItem(item,
+                            SidePanelViewModel.ElementChange.IsSwitcherActive,
+                            0)
                     } else {
-                        viewModel.editItem(item, SidePanelViewModel.ElementChange.IsSwitcherActive)
+                        viewModel.editItem(item,
+                            SidePanelViewModel.ElementChange.IsSwitcherActive,
+                            0)
                     }
                 }
             }
