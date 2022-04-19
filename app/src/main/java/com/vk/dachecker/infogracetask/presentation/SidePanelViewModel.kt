@@ -86,6 +86,8 @@ class SidePanelViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun changeCount(i: Int) {
         _countSwitcher.value = _countSwitcher.value?.plus(i)
+        print("count viewModel switchers ${_countSwitcher.value}")
+        print("всего элементов ${counter.value}")
         if (_countSwitcher.value == counter.value) {
             _switcherManager.value = true
         } else if (_countSwitcher.value == 0) {

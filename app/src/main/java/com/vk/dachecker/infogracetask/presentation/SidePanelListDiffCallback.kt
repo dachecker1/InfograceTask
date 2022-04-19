@@ -3,7 +3,7 @@ package com.vk.dachecker.infogracetask.presentation
 import androidx.recyclerview.widget.DiffUtil
 import com.vk.dachecker.infogracetask.domain.SidePanelItem
 
-class SidePanelElementDiffCallback(
+class SidePanelListDiffCallback(
     private val oldList: List<SidePanelItem>,
     private val newList: List<SidePanelItem>,
 ) : DiffUtil.Callback() {

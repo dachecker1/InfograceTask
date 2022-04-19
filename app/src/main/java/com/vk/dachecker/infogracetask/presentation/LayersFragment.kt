@@ -44,12 +44,12 @@ class LayersFragment : Fragment() {
             rcView.adapter = adapter
 
             viewModel.itemList.observe(viewLifecycleOwner) {
-                adapter.listItem = it
+                adapter.submitList(it)
                 viewModel.setCounter(it.size)
             }
 
             viewModel.filtered.observe(viewLifecycleOwner) {
-                adapter.listItem = it
+                adapter.submitList(it)
             }
         }
 
