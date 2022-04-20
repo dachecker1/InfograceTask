@@ -11,7 +11,8 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.core.text.bold
 import androidx.lifecycle.LifecycleOwner
-import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.vk.dachecker.infogracetask.R
 import com.vk.dachecker.infogracetask.databinding.ToolPositionBinding
@@ -21,7 +22,8 @@ import com.vk.dachecker.infogracetask.domain.SidePanelItem
 class SidePanelAdapter(
     private val viewModel: SidePanelViewModel,
     private val viewLifecycleOwner: LifecycleOwner,
-) : ListAdapter<SidePanelItem, SidePanelAdapter.PanelHolder>(SidePanelElDiffCallback()) {
+) : RecyclerView.Adapter<SidePanelAdapter.PanelHolder>() {
+
 
 //    var listItem = listOf<SidePanelItem>()
 //        set(value) {
@@ -194,6 +196,17 @@ class SidePanelAdapter(
         }
     }
 
+    private val differCallback = object : DiffUtil.ItemCallback<SidePanelItem>() {
+        override fun areItemsTheSame(oldItem: SidePanelItem, newItem: SidePanelItem): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: SidePanelItem, newItem: SidePanelItem): Boolean {
+            return oldItem == newItem
+        }
+    }
+
+    val differ = AsyncListDiffer(this, differCallback)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PanelHolder {
         val view = LayoutInflater.from(parent.context).inflate(
             R.layout.tool_position,
@@ -203,12 +216,37 @@ class SidePanelAdapter(
         return PanelHolder(view)
     }
 
+    private var onItemClickListener: ((SidePanelItem) -> Unit)? = null
     override fun onBindViewHolder(holder: PanelHolder, position: Int) {
+        val item = differ.currentList[position]
         holder.bind(
-            getItem(position),
+//            listItem[position],  //возможно тут будет ошибка
+            item,
             viewModel,
             viewLifecycleOwner
         )
-        Log.d("MyTag", "reloaded list")
     }
+
+    override fun getItemCount(): Int {
+        return differ.currentList.size
+    }
+
+    fun moveItemInRecyclerViewList(from: Int, to: Int) {
+        val list = differ.currentList.toMutableList()
+        val fromLocation = list[from]
+        list.removeAt(from)
+        if (to < from) {
+            list.add(to + 1, fromLocation)
+        } else {
+            list.add(to - 1, fromLocation)
+        }
+        differ.submitList(list)
+    }
+
+    //устанавливаю слушатель на элемент панели меню
+    fun setOnItemClickListener(listener: (SidePanelItem) -> Unit) {
+        onItemClickListener = listener
+    }
+
+
 }

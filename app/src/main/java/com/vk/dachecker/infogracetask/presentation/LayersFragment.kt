@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.vk.dachecker.infogracetask.databinding.FragmentLayersBinding
@@ -20,6 +21,46 @@ class LayersFragment : Fragment() {
     private lateinit var adapter: SidePanelAdapter
     private lateinit var viewModel: SidePanelViewModel
 
+    private val itemTouchHelper by lazy {
+        val simpleItemTouchCallback = object : ItemTouchHelper.SimpleCallback(
+            ItemTouchHelper.UP or ItemTouchHelper.DOWN or ItemTouchHelper.START or ItemTouchHelper.END,
+            0
+        ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder,
+            ): Boolean {
+                val adapter = recyclerView.adapter as SidePanelAdapter
+                val from = viewHolder.absoluteAdapterPosition
+                val to = target.absoluteAdapterPosition
+                adapter.moveItemInRecyclerViewList(from, to)
+                adapter.notifyItemMoved(from, to)
+                return true
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+            }
+
+            override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
+                super.onSelectedChanged(viewHolder, actionState)
+                if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
+                    viewHolder?.itemView?.alpha = 0.5f
+                }
+            }
+
+            override fun clearView(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+            ) {
+                super.clearView(recyclerView, viewHolder)
+                viewHolder.itemView.alpha = 1.0f
+            }
+        }
+        ItemTouchHelper(simpleItemTouchCallback)
+    }
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -27,6 +68,7 @@ class LayersFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentLayersBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(requireActivity())[SidePanelViewModel::class.java]
+
         return binding.root
     }
 
@@ -34,23 +76,29 @@ class LayersFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initRCAdapter()
+        itemTouchHelper.attachToRecyclerView(binding.rcView)
     }
 
     private fun initRCAdapter() {
         binding.apply {
             adapter = SidePanelAdapter(viewModel, viewLifecycleOwner)
+//            adapter.differ.submitList(viewModel.itemList.value)
 
             rcView.layoutManager = LinearLayoutManager(requireContext())
             rcView.adapter = adapter
 
             viewModel.itemList.observe(viewLifecycleOwner) {
-                adapter.submitList(it)
+//                adapter.listItem = it
+                adapter.differ.submitList(it)
                 viewModel.setCounter(it.size)
             }
 
             viewModel.filtered.observe(viewLifecycleOwner) {
-                adapter.submitList(it)
+                adapter.differ.submitList(it)
+//                adapter.listItem = it
             }
+
+
         }
 
         /**
