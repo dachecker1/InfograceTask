@@ -27,6 +27,11 @@ class SidePanelViewModel(application: Application) : AndroidViewModel(applicatio
     val switcherManager: LiveData<Boolean>
         get() = _switcherManager
 
+    private val _dragListIsActive =
+        MutableLiveData<Boolean>(false) // возможность перетаскивания элементов
+    val dragListIsActive: LiveData<Boolean>
+        get() = _dragListIsActive
+
     private val _countSwitcher =
         MutableLiveData<Int>(0)  //счетчик, считает количество активированных переключателей
     val countSwitcher: LiveData<Int>
@@ -42,6 +47,10 @@ class SidePanelViewModel(application: Application) : AndroidViewModel(applicatio
     val filtered: LiveData<List<SidePanelItem>>
         get() = _filteredItems
 
+    fun dragList() {
+        _dragListIsActive.value = !_dragListIsActive.value!!
+    }
+
 
     //устанавливает количество невидимых элементов
     fun setCounter(i: Int) {
@@ -49,7 +58,7 @@ class SidePanelViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     //метод сохранения изменений в элементе, запись изменений в БД
-    fun editItem(item: SidePanelItem, change: ElementChange) {
+    fun editItem(item: SidePanelItem, change: ElementChange, progress: Int) {
         when (change) {
             ElementChange.IsDetailOpen -> {
                 val temp = item.copy(isDetailOpen = !item.isDetailOpen)
@@ -69,6 +78,13 @@ class SidePanelViewModel(application: Application) : AndroidViewModel(applicatio
                     editItemUseCase.editItem(temp)
                 }
             }
+
+            ElementChange.TransparencyLevel -> {
+                val temp = item.copy(seekBar = progress)
+                viewModelScope.launch {
+                    editItemUseCase.editItem(temp)
+                }
+            }
         }
     }
 
@@ -79,6 +95,8 @@ class SidePanelViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun changeCount(i: Int) {
         _countSwitcher.value = _countSwitcher.value?.plus(i)
+        print("count viewModel switchers ${_countSwitcher.value}")
+        print("всего элементов ${counter.value}")
         if (_countSwitcher.value == counter.value) {
             _switcherManager.value = true
         } else if (_countSwitcher.value == 0) {
@@ -106,5 +124,6 @@ class SidePanelViewModel(application: Application) : AndroidViewModel(applicatio
         object IsDetailOpen : ElementChange()
         object IsActive : ElementChange()
         object IsSwitcherActive : ElementChange()
+        object TransparencyLevel : ElementChange()
     }
 }

@@ -11,6 +11,8 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.core.text.bold
 import androidx.lifecycle.LifecycleOwner
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.vk.dachecker.infogracetask.R
 import com.vk.dachecker.infogracetask.databinding.ToolPositionBinding
@@ -22,11 +24,14 @@ class SidePanelAdapter(
     private val viewLifecycleOwner: LifecycleOwner,
 ) : RecyclerView.Adapter<SidePanelAdapter.PanelHolder>() {
 
-    var listItem = listOf<SidePanelItem>()
-        set(value) {
-            field = value
-            notifyDataSetChanged()
-        }
+
+//    var listItem = listOf<SidePanelItem>()
+//        set(value) {
+//            val callback = SidePanelListDiffCallback(listItem, value)
+//            val diffResult = DiffUtil.calculateDiff(callback)
+//            diffResult.dispatchUpdatesTo(this)
+//            field = value
+//        }
 
     class PanelHolder(view: View) : RecyclerView.ViewHolder(view) {
 
@@ -75,12 +80,24 @@ class SidePanelAdapter(
                 }
             }
 
+//            if(sidePanelItem.switcher){
+//                viewModel.changeCount(plusSwitcher)
+//            }
+
             if (sidePanelItem.isActive) {
                 imInvisible.visibility = View.VISIBLE
                 mainPanel.alpha = 0.5F
             } else {
                 imInvisible.visibility = View.GONE
                 mainPanel.alpha = 1F
+            }
+
+            if (viewModel.dragListIsActive.value == true) {
+                binding.switcher.visibility = View.GONE
+                binding.dragAndDrop.visibility = View.VISIBLE
+            } else {
+                binding.switcher.visibility = View.VISIBLE
+                binding.dragAndDrop.visibility = View.GONE
             }
         }
 
@@ -91,15 +108,15 @@ class SidePanelAdapter(
         ) =
             with(binding) {
                 imArrow.setOnClickListener {
-                    viewModel.editItem(item, SidePanelViewModel.ElementChange.IsDetailOpen)
+                    viewModel.editItem(item, SidePanelViewModel.ElementChange.IsDetailOpen, 0)
                 }
 
                 tvTitle.setOnClickListener {
-                    viewModel.editItem(item, SidePanelViewModel.ElementChange.IsDetailOpen)
+                    viewModel.editItem(item, SidePanelViewModel.ElementChange.IsDetailOpen, 0)
                 }
 
                 tvTitle.setOnLongClickListener {
-                    viewModel.editItem(item, SidePanelViewModel.ElementChange.IsActive)
+                    viewModel.editItem(item, SidePanelViewModel.ElementChange.IsActive, 0)
                     true
                 }
 
@@ -110,7 +127,7 @@ class SidePanelAdapter(
                         val color = root.resources.getColor(R.color.green)
                         isPanelTouched = false
                         binding.apply {
-                        imLineLogo.colorFilter = null
+                            imLineLogo.colorFilter = null
                             s.bold { append(item.title) }
                             s.setSpan(ForegroundColorSpan(color),
                                 0, item.title.length,
@@ -122,7 +139,7 @@ class SidePanelAdapter(
                         val color = root.resources.getColor(R.color.white)
                         isPanelTouched = true
                         binding.apply {
-                        imLineLogo.setColorFilter(R.color.green)
+                            imLineLogo.setColorFilter(R.color.green)
                             s.append(item.title)
                             s.setSpan(ForegroundColorSpan(color),
                                 0, item.title.length,
@@ -134,7 +151,7 @@ class SidePanelAdapter(
                 }
 
                 mainPanel.setOnLongClickListener {
-                    viewModel.editItem(item, SidePanelViewModel.ElementChange.IsActive)
+                    viewModel.editItem(item, SidePanelViewModel.ElementChange.IsActive, 0)
                     true
                 }
 
@@ -150,18 +167,25 @@ class SidePanelAdapter(
 
                     override fun onStartTrackingTouch(seek: SeekBar?) {}
 
-                    override fun onStopTrackingTouch(seek: SeekBar?) {}
+                    override fun onStopTrackingTouch(seek: SeekBar?) {
+                        if (seek != null) {
+                            viewModel.editItem(item,
+                                SidePanelViewModel.ElementChange.TransparencyLevel,
+                                seek.progress)
+                        }
+                    }
                 })
 
                 switcher.setOnClickListener {
-                    if (switcher.isChecked) {
-                        viewModel.editItem(item, SidePanelViewModel.ElementChange.IsSwitcherActive)
-                    } else {
-                        viewModel.editItem(item, SidePanelViewModel.ElementChange.IsSwitcherActive)
+                    viewModel.editItem(item,
+                        SidePanelViewModel.ElementChange.IsSwitcherActive,
+                        0)
+                    if (switcher.isChecked) { //выключаем
+                        viewModel.changeCount(minusSwitcher)
+                    } else { //включаем
+                        viewModel.changeCount(plusSwitcher)
                     }
                 }
-
-
             }
 
         private fun setObservers(
@@ -170,33 +194,76 @@ class SidePanelAdapter(
             viewModel: SidePanelViewModel,
             viewLifecycleOwner: LifecycleOwner,
         ) {
+            viewModel.countSwitcher.observe(viewLifecycleOwner) {
+                Log.d("Switcher", "count switchers $it")
+            }
 
             viewModel.switcherManager.observe(viewLifecycleOwner) {
                 binding.switcher.isChecked = it
             }
+
+            viewModel.dragListIsActive.observe(viewLifecycleOwner) { isDragActive ->
+                if (isDragActive) {
+                    binding.switcher.visibility = View.GONE
+                    binding.dragAndDrop.visibility = View.VISIBLE
+                } else {
+                    binding.switcher.visibility = View.VISIBLE
+                    binding.dragAndDrop.visibility = View.GONE
+                }
+            }
         }
     }
 
+    private val differCallback = object : DiffUtil.ItemCallback<SidePanelItem>() {
+        override fun areItemsTheSame(oldItem: SidePanelItem, newItem: SidePanelItem): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: SidePanelItem, newItem: SidePanelItem): Boolean {
+            return oldItem == newItem
+        }
+    }
+
+    val differ = AsyncListDiffer(this, differCallback)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PanelHolder {
         val view = LayoutInflater.from(parent.context).inflate(
             R.layout.tool_position,
-                parent,
-                false
-            )
+            parent,
+            false
+        )
         return PanelHolder(view)
     }
 
+    private var onItemClickListener: ((SidePanelItem) -> Unit)? = null
     override fun onBindViewHolder(holder: PanelHolder, position: Int) {
+        val item = differ.currentList[position]
         holder.bind(
-            listItem[position],
+//            listItem[position],  //возможно тут будет ошибка
+            item,
             viewModel,
             viewLifecycleOwner
         )
-        Log.d("MyTag", "reloaded list")
     }
 
     override fun getItemCount(): Int {
-        return listItem.size
+        return differ.currentList.size
+    }
+
+    fun moveItemInRecyclerViewList(from: Int, to: Int) {
+        val list = differ.currentList.toMutableList()
+        val fromLocation = list[from]
+        list.removeAt(from)
+        if (to < from) {
+            list.add(to + 1, fromLocation)
+        } else {
+            list.add(to - 1, fromLocation)
+        }
+        differ.submitList(list)
+    }
+
+    //устанавливаю слушатель на элемент панели меню
+    fun setOnItemClickListener(listener: (SidePanelItem) -> Unit) {
+        onItemClickListener = listener
     }
 
 
