@@ -47,6 +47,10 @@ class MainActivity : FragmentActivity() {
             dialogHelper = DialogHelper(this, viewModel)
             dialogHelper.createDialog()
         }
+
+        binding.dragList.setOnClickListener {
+            viewModel.dragList()
+        }
     }
 
     private fun setObservers() = with(viewModel){

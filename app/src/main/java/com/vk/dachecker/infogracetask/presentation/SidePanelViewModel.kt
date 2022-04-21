@@ -27,6 +27,11 @@ class SidePanelViewModel(application: Application) : AndroidViewModel(applicatio
     val switcherManager: LiveData<Boolean>
         get() = _switcherManager
 
+    private val _dragListIsActive =
+        MutableLiveData<Boolean>(false) // возможность перетаскивания элементов
+    val dragListIsActive: LiveData<Boolean>
+        get() = _dragListIsActive
+
     private val _countSwitcher =
         MutableLiveData<Int>(0)  //счетчик, считает количество активированных переключателей
     val countSwitcher: LiveData<Int>
@@ -41,6 +46,10 @@ class SidePanelViewModel(application: Application) : AndroidViewModel(applicatio
     private val _filteredItems = MutableLiveData<List<SidePanelItem>>()
     val filtered: LiveData<List<SidePanelItem>>
         get() = _filteredItems
+
+    fun dragList() {
+        _dragListIsActive.value = !_dragListIsActive.value!!
+    }
 
 
     //устанавливает количество невидимых элементов

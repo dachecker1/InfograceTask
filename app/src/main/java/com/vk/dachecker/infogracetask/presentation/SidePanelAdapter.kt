@@ -91,6 +91,14 @@ class SidePanelAdapter(
                 imInvisible.visibility = View.GONE
                 mainPanel.alpha = 1F
             }
+
+            if (viewModel.dragListIsActive.value == true) {
+                binding.switcher.visibility = View.GONE
+                binding.dragAndDrop.visibility = View.VISIBLE
+            } else {
+                binding.switcher.visibility = View.VISIBLE
+                binding.dragAndDrop.visibility = View.GONE
+            }
         }
 
         private fun setClickListeners(
@@ -192,6 +200,16 @@ class SidePanelAdapter(
 
             viewModel.switcherManager.observe(viewLifecycleOwner) {
                 binding.switcher.isChecked = it
+            }
+
+            viewModel.dragListIsActive.observe(viewLifecycleOwner) { isDragActive ->
+                if (isDragActive) {
+                    binding.switcher.visibility = View.GONE
+                    binding.dragAndDrop.visibility = View.VISIBLE
+                } else {
+                    binding.switcher.visibility = View.VISIBLE
+                    binding.dragAndDrop.visibility = View.GONE
+                }
             }
         }
     }
