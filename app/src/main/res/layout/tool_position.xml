@@ -56,17 +56,6 @@
                 app:showText="false" />
 
             <ImageView
-                android:id="@+id/drag_and_drop"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginEnd="16dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imArrow"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_drag_list_item" />
-
-            <ImageView
 
                 android:id="@+id/imLineLogo"
                 android:layout_width="26dp"

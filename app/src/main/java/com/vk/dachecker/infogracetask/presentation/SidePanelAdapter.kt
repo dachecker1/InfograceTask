@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -92,13 +91,13 @@ class SidePanelAdapter(
                 mainPanel.alpha = 1F
             }
 
-            if (viewModel.dragListIsActive.value == true) {
-                binding.switcher.visibility = View.GONE
-                binding.dragAndDrop.visibility = View.VISIBLE
-            } else {
-                binding.switcher.visibility = View.VISIBLE
-                binding.dragAndDrop.visibility = View.GONE
-            }
+//            if (viewModel.dragListIsActive.value == true) {
+//                binding.switcher.visibility = View.GONE
+//                binding.dragAndDrop.visibility = View.VISIBLE
+//            } else {
+//                binding.switcher.visibility = View.VISIBLE
+//                binding.dragAndDrop.visibility = View.GONE
+//            }
         }
 
         private fun setClickListeners(
@@ -194,22 +193,12 @@ class SidePanelAdapter(
             viewModel: SidePanelViewModel,
             viewLifecycleOwner: LifecycleOwner,
         ) {
-            viewModel.countSwitcher.observe(viewLifecycleOwner) {
-                Log.d("Switcher", "count switchers $it")
-            }
+//            viewModel.countSwitcher.observe(viewLifecycleOwner) {
+//                Log.d("Switcher", "count switchers $it")
+//            }
 
             viewModel.switcherManager.observe(viewLifecycleOwner) {
                 binding.switcher.isChecked = it
-            }
-
-            viewModel.dragListIsActive.observe(viewLifecycleOwner) { isDragActive ->
-                if (isDragActive) {
-                    binding.switcher.visibility = View.GONE
-                    binding.dragAndDrop.visibility = View.VISIBLE
-                } else {
-                    binding.switcher.visibility = View.VISIBLE
-                    binding.dragAndDrop.visibility = View.GONE
-                }
             }
         }
     }
@@ -238,7 +227,6 @@ class SidePanelAdapter(
     override fun onBindViewHolder(holder: PanelHolder, position: Int) {
         val item = differ.currentList[position]
         holder.bind(
-//            listItem[position],  //возможно тут будет ошибка
             item,
             viewModel,
             viewLifecycleOwner

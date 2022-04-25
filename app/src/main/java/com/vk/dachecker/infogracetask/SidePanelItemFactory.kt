@@ -18,7 +18,8 @@ class SidePanelItemFactory(context: Context) {
             amount = 23,
             zoom1 = 16,
             zoom2 = 18,
-            itemId = 1
+            itemId = 1,
+            isDrag = false
         ),
         SidePanelItem(
             id = 2,
@@ -32,7 +33,8 @@ class SidePanelItemFactory(context: Context) {
             amount = 23,
             zoom1 = 16,
             zoom2 = 18,
-            itemId = 2
+            itemId = 2,
+            isDrag = false
         ),
         SidePanelItem(
             id = 3,
@@ -46,7 +48,8 @@ class SidePanelItemFactory(context: Context) {
             amount = 23,
             zoom1 = 16,
             zoom2 = 18,
-            itemId = 3
+            itemId = 3,
+            isDrag = false
         ),
         SidePanelItem(
             id = 4,
@@ -60,7 +63,8 @@ class SidePanelItemFactory(context: Context) {
             amount = 23,
             zoom1 = 16,
             zoom2 = 18,
-            itemId = 3
+            itemId = 3,
+            isDrag = false
         ),
         SidePanelItem(
             id = 5,
@@ -74,7 +78,8 @@ class SidePanelItemFactory(context: Context) {
             amount = 23,
             zoom1 = 16,
             zoom2 = 18,
-            itemId = 3
+            itemId = 3,
+            isDrag = false
         ),
         SidePanelItem(
             id = 6,
@@ -88,7 +93,8 @@ class SidePanelItemFactory(context: Context) {
             amount = 23,
             zoom1 = 16,
             zoom2 = 18,
-            itemId = 3
+            itemId = 3,
+            isDrag = false
         ),
         SidePanelItem(
             id = 7,
@@ -102,7 +108,8 @@ class SidePanelItemFactory(context: Context) {
             amount = 23,
             zoom1 = 16,
             zoom2 = 18,
-            itemId = 3
+            itemId = 3,
+            isDrag = false
         ),
         SidePanelItem(
             id = 8,
@@ -116,7 +123,8 @@ class SidePanelItemFactory(context: Context) {
             amount = 23,
             zoom1 = 16,
             zoom2 = 18,
-            itemId = 3
+            itemId = 3,
+            isDrag = false
         ),
         SidePanelItem(
             id = 9,
@@ -130,7 +138,8 @@ class SidePanelItemFactory(context: Context) {
             amount = 23,
             zoom1 = 16,
             zoom2 = 18,
-            itemId = 3
+            itemId = 3,
+            isDrag = false
         ),
         SidePanelItem(
             id = 10,
@@ -144,7 +153,8 @@ class SidePanelItemFactory(context: Context) {
             amount = 23,
             zoom1 = 16,
             zoom2 = 18,
-            itemId = 3
+            itemId = 3,
+            isDrag = false
         ),
         SidePanelItem(
             id =11,
@@ -158,7 +168,8 @@ class SidePanelItemFactory(context: Context) {
             amount = 23,
             zoom1 = 16,
             zoom2 = 18,
-            itemId = 3
+            itemId = 3,
+            isDrag = false
         ),
         SidePanelItem(
             id = 11,
@@ -172,7 +183,8 @@ class SidePanelItemFactory(context: Context) {
             amount = 23,
             zoom1 = 16,
             zoom2 = 18,
-            itemId = 3
+            itemId = 3,
+            isDrag = false
         ),
         SidePanelItem(
             id = 12,
@@ -186,7 +198,8 @@ class SidePanelItemFactory(context: Context) {
             amount = 23,
             zoom1 = 16,
             zoom2 = 18,
-            itemId = 3
+            itemId = 3,
+            isDrag = false
         ),
         SidePanelItem(
             id = 13,
@@ -200,7 +213,8 @@ class SidePanelItemFactory(context: Context) {
             amount = 23,
             zoom1 = 16,
             zoom2 = 18,
-            itemId = 3
+            itemId = 3,
+            isDrag = false
         ),
         SidePanelItem(
             id = 14,
@@ -214,7 +228,8 @@ class SidePanelItemFactory(context: Context) {
             amount = 23,
             zoom1 = 16,
             zoom2 = 18,
-            itemId = 3
+            itemId = 3,
+            isDrag = false
         )
     )
 
