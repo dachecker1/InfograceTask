@@ -17,7 +17,8 @@ class ItemMapper {
         seekBar = item.seekBar,
         amount = item.amount,
         zoom1 = item.zoom1,
-        zoom2 = item.zoom2
+        zoom2 = item.zoom2,
+        isDrag = item.isDrag
     )
 
     fun mapDbModelToEntity(itemDbModel: ItemDbModel) = SidePanelItem(
@@ -33,6 +34,7 @@ class ItemMapper {
         amount = itemDbModel.amount,
         zoom1 = itemDbModel.zoom1,
         zoom2 = itemDbModel.zoom2,
+        isDrag = itemDbModel.isDrag
     )
 
     fun mapListDbModelToListEntity(list: List<ItemDbModel>) = list.map {

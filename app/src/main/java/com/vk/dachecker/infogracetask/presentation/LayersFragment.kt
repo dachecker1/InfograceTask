@@ -1,6 +1,7 @@
 package com.vk.dachecker.infogracetask.presentation
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -76,29 +77,26 @@ class LayersFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initRCAdapter()
-        itemTouchHelper.attachToRecyclerView(binding.rcView)
+        attachDragAndDrop()
+
     }
+
 
     private fun initRCAdapter() {
         binding.apply {
             adapter = SidePanelAdapter(viewModel, viewLifecycleOwner)
-//            adapter.differ.submitList(viewModel.itemList.value)
 
             rcView.layoutManager = LinearLayoutManager(requireContext())
             rcView.adapter = adapter
 
             viewModel.itemList.observe(viewLifecycleOwner) {
-//                adapter.listItem = it
                 adapter.differ.submitList(it)
                 viewModel.setCounter(it.size)
             }
 
             viewModel.filtered.observe(viewLifecycleOwner) {
                 adapter.differ.submitList(it)
-//                adapter.listItem = it
             }
-
-
         }
 
         /**
@@ -116,6 +114,21 @@ class LayersFragment : Fragment() {
                 )
             }
         })
+    }
+
+    private fun attachDragAndDrop() {
+        try {
+            viewModel.dragListIsActive.observe(viewLifecycleOwner) { isActive ->
+                if (isActive) {
+                    itemTouchHelper.attachToRecyclerView(binding.rcView)
+                } else {
+                    itemTouchHelper.attachToRecyclerView(null)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(null, "something was wrong wint attaching to recyclerView ItemTouchHelper")
+        }
+
     }
 
     override fun onDestroy() {

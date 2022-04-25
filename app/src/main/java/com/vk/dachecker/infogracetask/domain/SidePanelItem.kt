@@ -13,6 +13,7 @@ data class SidePanelItem(
     val amount: Int,
     val zoom1: Int,
     val zoom2: Int,
+    val isDrag: Boolean,
 ) {
     companion object {
         const val UNDEFINED_ID = 0

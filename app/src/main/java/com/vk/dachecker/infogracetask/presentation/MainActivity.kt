@@ -1,6 +1,7 @@
 package com.vk.dachecker.infogracetask.presentation
 
 import android.os.Bundle
+import android.view.animation.AnimationUtils
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
@@ -39,6 +40,8 @@ class MainActivity : FragmentActivity() {
     }
 
     private fun setClickListeners() {
+        val anim = AnimationUtils.loadAnimation(this, R.anim.alpha)
+
         binding.bottomMenuSwitcher.setOnClickListener {
             viewModel.changeSwitcherStatus()
         }
@@ -48,8 +51,13 @@ class MainActivity : FragmentActivity() {
             dialogHelper.createDialog()
         }
 
-        binding.dragList.setOnClickListener {
+        binding.dragList.setOnClickListener { view ->
             viewModel.dragList()
+            if (viewModel.dragListIsActive.value!!) {
+                view.startAnimation(anim)
+            } else {
+                view.clearAnimation()
+            }
         }
     }
 
