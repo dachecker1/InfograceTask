@@ -3,7 +3,6 @@ package com.vk.dachecker.infogracetask.presentation
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -103,7 +102,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setClickListeners() {
-        val anim = AnimationUtils.loadAnimation(this, R.anim.alpha)
 
         binding.bottomMenuSwitcher.setOnClickListener {
             viewModel.changeSwitcherStatus()
@@ -117,9 +115,9 @@ class MainActivity : AppCompatActivity() {
         binding.dragList.setOnClickListener { view ->
             viewModel.dragList()
             if (viewModel.dragListIsActive.value!!) {
-                view.startAnimation(anim)
+                binding.bottomMenuSwitcher.visibility = View.GONE
             } else {
-                view.clearAnimation()
+                binding.bottomMenuSwitcher.visibility = View.VISIBLE
             }
         }
     }

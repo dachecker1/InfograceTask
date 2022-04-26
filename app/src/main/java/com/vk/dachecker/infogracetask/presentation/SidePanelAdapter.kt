@@ -135,8 +135,8 @@ class SidePanelAdapter(
                         val color = root.resources.getColor(R.color.green)
                         isPanelTouched = false
                         binding.apply {
-                            DrawableCompat.setTint(wrappedDrawable,
-                                binding.root.context.getColor(R.color.white))
+//                            DrawableCompat.setTint(wrappedDrawable,
+//                                binding.root.context.getColor(R.color.white))
                             s.bold { append(item.title) }
                             s.setSpan(ForegroundColorSpan(color),
                                 0, item.title.length,
@@ -148,8 +148,8 @@ class SidePanelAdapter(
                         val color = root.resources.getColor(R.color.white)
                         isPanelTouched = true
                         binding.apply {
-                            DrawableCompat.setTint(wrappedDrawable,
-                                binding.root.context.getColor(R.color.green))
+//                            DrawableCompat.setTint(wrappedDrawable,
+//                                binding.root.context.getColor(R.color.green))
                             s.append(item.title)
                             s.setSpan(ForegroundColorSpan(color),
                                 0, item.title.length,
@@ -211,8 +211,6 @@ class SidePanelAdapter(
 //            viewModel.switcherManager.observe(viewLifecycleOwner) {
 //                binding.switcher.isChecked = it
 //            }
-
-
         }
     }
 
