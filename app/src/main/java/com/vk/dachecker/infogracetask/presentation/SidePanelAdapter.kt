@@ -23,15 +23,6 @@ class SidePanelAdapter(
     private val viewLifecycleOwner: LifecycleOwner,
 ) : RecyclerView.Adapter<SidePanelAdapter.PanelHolder>() {
 
-
-//    var listItem = listOf<SidePanelItem>()
-//        set(value) {
-//            val callback = SidePanelListDiffCallback(listItem, value)
-//            val diffResult = DiffUtil.calculateDiff(callback)
-//            diffResult.dispatchUpdatesTo(this)
-//            field = value
-//        }
-
     class PanelHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         var isPanelTouched = false
@@ -90,14 +81,6 @@ class SidePanelAdapter(
                 imInvisible.visibility = View.GONE
                 mainPanel.alpha = 1F
             }
-
-//            if (viewModel.dragListIsActive.value == true) {
-//                binding.switcher.visibility = View.GONE
-//                binding.dragAndDrop.visibility = View.VISIBLE
-//            } else {
-//                binding.switcher.visibility = View.VISIBLE
-//                binding.dragAndDrop.visibility = View.GONE
-//            }
         }
 
         private fun setClickListeners(

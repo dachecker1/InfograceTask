@@ -1,8 +1,13 @@
 package com.vk.dachecker.infogracetask.presentation
 
+import android.content.Context
 import android.os.Bundle
+import android.view.View
 import android.view.animation.AnimationUtils
-import androidx.fragment.app.FragmentActivity
+import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
@@ -10,29 +15,73 @@ import com.vk.dachecker.infogracetask.R
 import com.vk.dachecker.infogracetask.databinding.ActivityMainBinding
 import com.vk.dachecker.infogracetask.domain.DialogHelper
 
-class MainActivity : FragmentActivity() {
-    private lateinit var viewModel : SidePanelViewModel
+//class MainActivity : FragmentActivity() {
+class MainActivity : AppCompatActivity() {
+    private lateinit var viewModel: SidePanelViewModel
     private lateinit var adapter: NumberAdapter
     private lateinit var viewPager: ViewPager2
-    private lateinit var dialogHelper : DialogHelper
+    private lateinit var dialogHelper: DialogHelper
     private var _binding: ActivityMainBinding? = null
     private val binding: ActivityMainBinding
         get() = _binding ?: throw RuntimeException("ActivityMainBinding == null")
+
+    lateinit var drawerLayout: DrawerLayout
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        drawerLayout = binding.drawerLayout
         viewModel = ViewModelProvider(this)[SidePanelViewModel::class.java]
+
+        setSupportActionBar(binding.activityMainToolbar)
+        setToggle()
 
         initViewPager()
         setObservers()
         setClickListeners()
         fillActivity()
+
     }
 
-    private fun fillActivity(){
+    private fun setToggle() {
+        val toggle: ActionBarDrawerToggle = object : ActionBarDrawerToggle(
+            this,
+            drawerLayout,
+            R.string.open,
+            R.string.close
+        ) {
+            override fun onDrawerClosed(drawerView: View) {
+                super.onDrawerClosed(drawerView)
+                try {
+                    val inputMethodManager =
+                        getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    inputMethodManager.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+                } catch (e: Exception) {
+                    e.stackTrace
+                }
+            }
+
+            override fun onDrawerOpened(drawerView: View) {
+                super.onDrawerOpened(drawerView)
+                try {
+                    val inputMethodManager =
+                        getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    inputMethodManager.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
+
+                } catch (e: Exception) {
+                    e.stackTrace
+                }
+            }
+        }
+
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+    }
+
+    private fun fillActivity() {
         binding.tvCountVisible.text = getString(
             R.string.tab_count_visible_elements,
             viewModel.invisibleElements.value
