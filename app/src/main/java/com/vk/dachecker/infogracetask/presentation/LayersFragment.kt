@@ -11,10 +11,11 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.vk.dachecker.infogracetask.databinding.FragmentLayersBinding
+import com.vk.dachecker.infogracetask.domain.SidePanelItem
 
 const val ARG_OBJECT = "object"
 
-class LayersFragment : Fragment() {
+class LayersFragment : Fragment(), ClickListener {
 
     private var _binding: FragmentLayersBinding? = null
     private val binding: FragmentLayersBinding
@@ -84,7 +85,7 @@ class LayersFragment : Fragment() {
 
     private fun initRCAdapter() {
         binding.apply {
-            adapter = SidePanelAdapter(viewModel, viewLifecycleOwner)
+            adapter = SidePanelAdapter(viewModel, viewLifecycleOwner, this@LayersFragment)
 
             rcView.layoutManager = LinearLayoutManager(requireContext())
             rcView.adapter = adapter
@@ -96,6 +97,11 @@ class LayersFragment : Fragment() {
 
             viewModel.filtered.observe(viewLifecycleOwner) {
                 adapter.differ.submitList(it)
+            }
+
+            viewModel.dragListIsActive.observe(viewLifecycleOwner) {
+                adapter.isDraggable = it
+                adapter.notifyDataSetChanged()
             }
         }
 
@@ -116,24 +122,35 @@ class LayersFragment : Fragment() {
         })
     }
 
+
+    override fun onDestroy() {
+        _binding = null
+        super.onDestroy()
+    }
+
+
+    override fun editItem(
+        item: SidePanelItem,
+        change: SidePanelViewModel.ElementChange,
+        progress: Int,
+    ) {
+        viewModel.editItem(item, change, progress)
+    }
+
     private fun attachDragAndDrop() {
         try {
             viewModel.dragListIsActive.observe(viewLifecycleOwner) { isActive ->
                 if (isActive) {
                     itemTouchHelper.attachToRecyclerView(binding.rcView)
+//                    itemTouchHelper.attachToRecyclerView()
                 } else {
                     itemTouchHelper.attachToRecyclerView(null)
                 }
             }
+
         } catch (e: Exception) {
             Log.e(null, "something was wrong wint attaching to recyclerView ItemTouchHelper")
         }
-
-    }
-
-    override fun onDestroy() {
-        _binding = null
-        super.onDestroy()
     }
 
     companion object {

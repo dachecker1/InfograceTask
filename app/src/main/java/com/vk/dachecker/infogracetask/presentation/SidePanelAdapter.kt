@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.text.bold
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -21,11 +23,15 @@ import com.vk.dachecker.infogracetask.domain.SidePanelItem
 class SidePanelAdapter(
     private val viewModel: SidePanelViewModel,
     private val viewLifecycleOwner: LifecycleOwner,
+    private val listener: ClickListener,
 ) : RecyclerView.Adapter<SidePanelAdapter.PanelHolder>() {
+
+    var isDraggable = false
 
     class PanelHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         var isPanelTouched = false
+
         private val plusSwitcher = 1
         private val minusSwitcher = -1
 
@@ -36,10 +42,13 @@ class SidePanelAdapter(
             sidePanelItem: SidePanelItem,
             viewModel: SidePanelViewModel,
             viewLifecycleOwner: LifecycleOwner,
+            listener: ClickListener,
+            isDraggable: Boolean,
         ) = with(binding) {
 
-            setClickListeners(binding, sidePanelItem, viewModel)
-            setObservers(binding, sidePanelItem, viewModel, viewLifecycleOwner)
+            setClickListeners(binding, sidePanelItem, viewModel, listener)
+//            setObservers(binding, sidePanelItem, viewModel, viewLifecycleOwner)
+
 
             imLineLogo.setImageResource(sidePanelItem.imageId)
             tvTitle.text = sidePanelItem.title
@@ -70,6 +79,18 @@ class SidePanelAdapter(
                 }
             }
 
+            when (isDraggable) {
+                true -> {
+                    switcher.visibility = View.GONE
+                    imDragElement.visibility = View.VISIBLE
+                }
+                false -> {
+                    switcher.visibility = View.VISIBLE
+                    imDragElement.visibility = View.GONE
+                }
+
+            }
+
 //            if(sidePanelItem.switcher){
 //                viewModel.changeCount(plusSwitcher)
 //            }
@@ -87,29 +108,35 @@ class SidePanelAdapter(
             binding: ToolPositionBinding,
             item: SidePanelItem,
             viewModel: SidePanelViewModel,
+            listener: ClickListener,
         ) =
             with(binding) {
                 imArrow.setOnClickListener {
-                    viewModel.editItem(item, SidePanelViewModel.ElementChange.IsDetailOpen, 0)
+                    listener.editItem(item, SidePanelViewModel.ElementChange.IsDetailOpen, 0)
                 }
 
                 tvTitle.setOnClickListener {
-                    viewModel.editItem(item, SidePanelViewModel.ElementChange.IsDetailOpen, 0)
+                    listener.editItem(item, SidePanelViewModel.ElementChange.IsDetailOpen, 0)
                 }
 
                 tvTitle.setOnLongClickListener {
-                    viewModel.editItem(item, SidePanelViewModel.ElementChange.IsActive, 0)
+                    listener.editItem(item, SidePanelViewModel.ElementChange.IsActive, 0)
                     true
                 }
 
-                mainPanel.setOnClickListener {
+                mainPanel.setOnClickListener { view ->
+                    val unwrappedDrawable =
+                        AppCompatResources.getDrawable(binding.root.context, item.imageId)
+                    val wrappedDrawable = DrawableCompat.wrap(unwrappedDrawable!!)
+
 
                     val s = SpannableStringBuilder()
                     if (isPanelTouched) {
                         val color = root.resources.getColor(R.color.green)
                         isPanelTouched = false
                         binding.apply {
-                            imLineLogo.colorFilter = null
+                            DrawableCompat.setTint(wrappedDrawable,
+                                binding.root.context.getColor(R.color.white))
                             s.bold { append(item.title) }
                             s.setSpan(ForegroundColorSpan(color),
                                 0, item.title.length,
@@ -121,7 +148,8 @@ class SidePanelAdapter(
                         val color = root.resources.getColor(R.color.white)
                         isPanelTouched = true
                         binding.apply {
-                            imLineLogo.setColorFilter(R.color.green)
+                            DrawableCompat.setTint(wrappedDrawable,
+                                binding.root.context.getColor(R.color.green))
                             s.append(item.title)
                             s.setSpan(ForegroundColorSpan(color),
                                 0, item.title.length,
@@ -132,8 +160,8 @@ class SidePanelAdapter(
                     }
                 }
 
-                mainPanel.setOnLongClickListener {
-                    viewModel.editItem(item, SidePanelViewModel.ElementChange.IsActive, 0)
+                imLineLogo.setOnLongClickListener {
+                    listener.editItem(item, SidePanelViewModel.ElementChange.IsActive, 0)
                     true
                 }
 
@@ -151,7 +179,7 @@ class SidePanelAdapter(
 
                     override fun onStopTrackingTouch(seek: SeekBar?) {
                         if (seek != null) {
-                            viewModel.editItem(item,
+                            listener.editItem(item,
                                 SidePanelViewModel.ElementChange.TransparencyLevel,
                                 seek.progress)
                         }
@@ -159,7 +187,7 @@ class SidePanelAdapter(
                 })
 
                 switcher.setOnClickListener {
-                    viewModel.editItem(item,
+                    listener.editItem(item,
                         SidePanelViewModel.ElementChange.IsSwitcherActive,
                         0)
                     if (switcher.isChecked) { //выключаем
@@ -180,9 +208,11 @@ class SidePanelAdapter(
 //                Log.d("Switcher", "count switchers $it")
 //            }
 
-            viewModel.switcherManager.observe(viewLifecycleOwner) {
-                binding.switcher.isChecked = it
-            }
+//            viewModel.switcherManager.observe(viewLifecycleOwner) {
+//                binding.switcher.isChecked = it
+//            }
+
+
         }
     }
 
@@ -212,7 +242,9 @@ class SidePanelAdapter(
         holder.bind(
             item,
             viewModel,
-            viewLifecycleOwner
+            viewLifecycleOwner,
+            listener,
+            isDraggable
         )
     }
 
