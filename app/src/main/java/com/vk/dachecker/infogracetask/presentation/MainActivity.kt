@@ -2,6 +2,7 @@ package com.vk.dachecker.infogracetask.presentation
 
 import android.content.Context
 import android.os.Bundle
+import android.view.Gravity
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -15,7 +16,6 @@ import com.vk.dachecker.infogracetask.R
 import com.vk.dachecker.infogracetask.databinding.ActivityMainBinding
 import com.vk.dachecker.infogracetask.domain.DialogHelper
 
-//class MainActivity : FragmentActivity() {
 class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: SidePanelViewModel
     private lateinit var adapter: NumberAdapter
@@ -50,6 +50,7 @@ class MainActivity : AppCompatActivity() {
         val toggle: ActionBarDrawerToggle = object : ActionBarDrawerToggle(
             this,
             drawerLayout,
+            binding.activityMainToolbar,
             R.string.open,
             R.string.close
         ) {
@@ -74,6 +75,14 @@ class MainActivity : AppCompatActivity() {
                 } catch (e: Exception) {
                     e.stackTrace
                 }
+            }
+        }
+
+        binding.activityMainToolbar.setNavigationOnClickListener {
+            if (drawerLayout.isDrawerOpen(Gravity.RIGHT)) {
+                drawerLayout.closeDrawer(Gravity.RIGHT);
+            } else {
+                drawerLayout.openDrawer(Gravity.RIGHT);
             }
         }
 
