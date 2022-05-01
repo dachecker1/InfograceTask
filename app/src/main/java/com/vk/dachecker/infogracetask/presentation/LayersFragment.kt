@@ -102,6 +102,7 @@ class LayersFragment : Fragment(), ClickListener {
             viewModel.dragListIsActive.observe(viewLifecycleOwner) {
                 adapter.isDraggable = it
                 adapter.notifyDataSetChanged()
+
             }
         }
 

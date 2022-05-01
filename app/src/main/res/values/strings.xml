@@ -27,4 +27,6 @@
     <string name="open">open</string>
     <string name="close">close</string>
 
+    <string name="edittext_hint"><font size="13">Лесничество / уч. лесничесвто / кв. 2 / в. 3-5</font></string>
+
 </resources>

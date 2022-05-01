@@ -32,6 +32,10 @@ class SidePanelViewModel(application: Application) : AndroidViewModel(applicatio
     val dragListIsActive: LiveData<Boolean>
         get() = _dragListIsActive
 
+    private val _searchModeIsActive = MutableLiveData<Boolean>(false)
+    val searchModeIsActive: LiveData<Boolean>
+        get() = _searchModeIsActive
+
     private val _countSwitcher =
         MutableLiveData<Int>(0)  //счетчик, считает количество активированных переключателей
     val countSwitcher: LiveData<Int>
@@ -46,6 +50,10 @@ class SidePanelViewModel(application: Application) : AndroidViewModel(applicatio
     private val _filteredItems = MutableLiveData<List<SidePanelItem>>()
     val filtered: LiveData<List<SidePanelItem>>
         get() = _filteredItems
+
+    fun searchMode() {
+        _searchModeIsActive.value = !_searchModeIsActive.value!!
+    }
 
     fun dragList() {
         _dragListIsActive.value = !_dragListIsActive.value!!
@@ -73,7 +81,7 @@ class SidePanelViewModel(application: Application) : AndroidViewModel(applicatio
                 }
             }
             ElementChange.IsSwitcherActive -> {
-                val temp = item.copy(switcher = !item.switcher!!) // значение может быть null
+                val temp = item.copy(switcher = !item.switcher)
                 viewModelScope.launch {
                     editItemUseCase.editItem(temp)
                 }
@@ -91,17 +99,26 @@ class SidePanelViewModel(application: Application) : AndroidViewModel(applicatio
     //метод изменения статуса переключателей
     fun changeSwitcherStatus() {
         _switcherManager.value = _switcherManager.value != true
+
+        getListItemUseCase.getItemList().value?.forEach {
+            editItem(
+                item = it,
+                change = ElementChange.IsSwitcherActive,
+                progress = 0
+            )
+        }
     }
 
-    fun changeCount(i: Int) {
-        _countSwitcher.value = _countSwitcher.value?.plus(i)
-        print("count viewModel switchers ${_countSwitcher.value}")
-        print("всего элементов ${counter.value}")
-        if (_countSwitcher.value == counter.value) {
-            _switcherManager.value = true
-        } else if (_countSwitcher.value == 0) {
-            _switcherManager.value = false
+    fun changeCount(isChecked: Boolean) {
+        val totalAmount = itemList.value!!.size
+
+        if (isChecked) {
+            _countSwitcher.value = _countSwitcher.value?.plus(1)
+        } else {
+            _countSwitcher.value = _countSwitcher.value?.plus(-1)
         }
+
+        _switcherManager.value = totalAmount == _countSwitcher.value
     }
 
     fun amountVisibleElements(first: Int, last: Int, firstVisible: Int, lastVisible: Int) {

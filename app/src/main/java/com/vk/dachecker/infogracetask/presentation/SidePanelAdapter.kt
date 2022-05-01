@@ -68,16 +68,6 @@ class SidePanelAdapter(
                 imArrow.setImageResource(R.drawable.ic_arrow_up)
             }
 
-            when (sidePanelItem.switcher) {
-                true -> {
-                    switcher.isChecked = true
-                    viewModel.changeCount(plusSwitcher)
-                }
-                false -> {
-                    switcher.isChecked = false
-                    viewModel.changeCount(minusSwitcher)
-                }
-            }
 
             when (isDraggable) {
                 true -> {
@@ -186,15 +176,12 @@ class SidePanelAdapter(
                     }
                 })
 
-                switcher.setOnClickListener {
+                switcher.setOnCheckedChangeListener { _, isChecked ->
                     listener.editItem(item,
                         SidePanelViewModel.ElementChange.IsSwitcherActive,
                         0)
-                    if (switcher.isChecked) { //выключаем
-                        viewModel.changeCount(minusSwitcher)
-                    } else { //включаем
-                        viewModel.changeCount(plusSwitcher)
-                    }
+
+                    viewModel.changeCount(isChecked)
                 }
             }
 

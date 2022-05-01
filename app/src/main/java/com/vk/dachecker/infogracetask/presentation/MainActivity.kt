@@ -2,6 +2,8 @@ package com.vk.dachecker.infogracetask.presentation
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Gravity
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -116,17 +118,32 @@ class MainActivity : AppCompatActivity() {
             viewModel.changeSwitcherStatus()
         }
 
-        binding.btnSearch.setOnClickListener {
-            dialogHelper = DialogHelper(this, viewModel)
-            dialogHelper.createDialog()
+        binding.btnSearch.setOnClickListener { view ->
+            /**
+             * вариант поиска со старым дизайном, не стал реализации вырезать
+             */
+//            dialogHelper = DialogHelper(this, viewModel)
+//            dialogHelper.createDialog()
+
+            viewModel.searchMode()
+            if (viewModel.searchModeIsActive.value!!) {
+                binding.btnSearch.setImageResource(R.drawable.btn_active_search)
+                binding.cvSearch.visibility = View.VISIBLE
+                textWatcher()
+            } else {
+                binding.btnSearch.setImageResource(R.drawable.btn_search)
+                binding.cvSearch.visibility = View.GONE
+            }
         }
 
         binding.dragList.setOnClickListener { view ->
             viewModel.dragList()
             if (viewModel.dragListIsActive.value!!) {
+                view.setBackgroundColor(getColor(R.color.green))
                 binding.bottomMenuSwitcher.visibility = View.GONE
             } else {
                 binding.bottomMenuSwitcher.visibility = View.VISIBLE
+                view.setBackgroundColor(getColor(R.color.dark_blue))
             }
         }
     }
@@ -139,8 +156,6 @@ class MainActivity : AppCompatActivity() {
         invisibleElements.observe(this@MainActivity) {
             binding.tvCountVisible.text = getString(R.string.tab_count_visible_elements, it)
         }
-
-
     }
 
     private fun initViewPager() {
@@ -157,6 +172,25 @@ class MainActivity : AppCompatActivity() {
         TabLayoutMediator(binding.tabLayout, binding.pager) { tab, position ->
             tab.text = tabNames[position]
         }.attach()
+    }
+
+    private fun textWatcher() {
+        binding.edSearch.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun afterTextChanged(text: Editable?) {
+                if (text != null) {
+                    viewModel.searchInfo(text.toString())
+                } else {
+                    viewModel.searchInfo("")
+                }
+            }
+
+        })
     }
 
     override fun onDestroy() {
