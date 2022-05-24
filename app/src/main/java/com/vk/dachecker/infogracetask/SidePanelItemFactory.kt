@@ -53,7 +53,7 @@ class SidePanelItemFactory(context: Context) {
         ),
         SidePanelItem(
             id = 4,
-            imageId = R.drawable.ic_line_border,
+            imageId = R.drawable.ic_fill_polygon,
             title = context.getString(R.string.sloy_firewall),
             isDetailOpen = false,
             isActive = false,
@@ -68,7 +68,7 @@ class SidePanelItemFactory(context: Context) {
         ),
         SidePanelItem(
             id = 5,
-            imageId = R.drawable.ic_line_border,
+            imageId = R.drawable.ic_center_to_gps,
             title = context.getString(R.string.sloy_firewall),
             isDetailOpen = false,
             isActive = false,
@@ -83,7 +83,7 @@ class SidePanelItemFactory(context: Context) {
         ),
         SidePanelItem(
             id = 6,
-            imageId = R.drawable.ic_line_border,
+            imageId = R.drawable.ic_region_border,
             title = context.getString(R.string.sloy_firewall),
             isDetailOpen = false,
             isActive = false,

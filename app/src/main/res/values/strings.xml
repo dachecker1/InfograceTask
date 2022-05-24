@@ -14,14 +14,19 @@
     <string name="common_layers">Общие слои</string>
     <string name="common_folder_with_layers">Папка со слоями</string>
 
-<!--    TabNames-->
+    <!--    TabNames-->
     <string name="tab_layer">Слои</string>
     <string name="tab_podlozhki">Подложки</string>
     <string name="tab_missions">Миссии</string>
     <string name="tab_count_visible_elements">Невидимых элементов: %d</string>
 
-<!--    search dialog-->
+    <!--    search dialog-->
     <string name="dialog_title">Начни что-то искать</string>
     <string name="dialog_search">Мне повезёт!</string>
+
+    <string name="open">open</string>
+    <string name="close">close</string>
+
+    <string name="edittext_hint"><font size="13">Лесничество / уч. лесничесвто / кв. 2 / в. 3-5</font></string>
 
 </resources>

@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.vk.dachecker.infogracetask.data.entity.ItemDbModel
 
-@Database(entities = [ItemDbModel::class], version = 2, exportSchema = false)
+@Database(entities = [ItemDbModel::class], version = 1, exportSchema = false)
 abstract class ItemsDataBase : RoomDatabase() {
 
     abstract fun listDao(): ItemListDao
