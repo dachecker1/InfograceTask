@@ -102,7 +102,6 @@ class LayersFragment : Fragment(), ClickListener {
             viewModel.dragListIsActive.observe(viewLifecycleOwner) {
                 adapter.isDraggable = it
                 adapter.notifyDataSetChanged()
-
             }
         }
 
@@ -143,7 +142,6 @@ class LayersFragment : Fragment(), ClickListener {
             viewModel.dragListIsActive.observe(viewLifecycleOwner) { isActive ->
                 if (isActive) {
                     itemTouchHelper.attachToRecyclerView(binding.rcView)
-//                    itemTouchHelper.attachToRecyclerView()
                 } else {
                     itemTouchHelper.attachToRecyclerView(null)
                 }

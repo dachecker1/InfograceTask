@@ -32,9 +32,6 @@ class SidePanelAdapter(
 
         var isPanelTouched = false
 
-        private val plusSwitcher = 1
-        private val minusSwitcher = -1
-
         private val binding = ToolPositionBinding.bind(view)
 
         @SuppressLint("StringFormatInvalid", "StringFormatMatches")
@@ -47,7 +44,6 @@ class SidePanelAdapter(
         ) = with(binding) {
 
             setClickListeners(binding, sidePanelItem, viewModel, listener)
-//            setObservers(binding, sidePanelItem, viewModel, viewLifecycleOwner)
 
 
             imLineLogo.setImageResource(sidePanelItem.imageId)
@@ -80,10 +76,6 @@ class SidePanelAdapter(
                 }
 
             }
-
-//            if(sidePanelItem.switcher){
-//                viewModel.changeCount(plusSwitcher)
-//            }
 
             if (sidePanelItem.isActive) {
                 imInvisible.visibility = View.VISIBLE
@@ -125,8 +117,6 @@ class SidePanelAdapter(
                         val color = root.resources.getColor(R.color.green)
                         isPanelTouched = false
                         binding.apply {
-//                            DrawableCompat.setTint(wrappedDrawable,
-//                                binding.root.context.getColor(R.color.white))
                             s.bold { append(item.title) }
                             s.setSpan(ForegroundColorSpan(color),
                                 0, item.title.length,
@@ -138,8 +128,6 @@ class SidePanelAdapter(
                         val color = root.resources.getColor(R.color.white)
                         isPanelTouched = true
                         binding.apply {
-//                            DrawableCompat.setTint(wrappedDrawable,
-//                                binding.root.context.getColor(R.color.green))
                             s.append(item.title)
                             s.setSpan(ForegroundColorSpan(color),
                                 0, item.title.length,
@@ -184,21 +172,6 @@ class SidePanelAdapter(
                     viewModel.changeCount(isChecked)
                 }
             }
-
-        private fun setObservers(
-            binding: ToolPositionBinding,
-            item: SidePanelItem,
-            viewModel: SidePanelViewModel,
-            viewLifecycleOwner: LifecycleOwner,
-        ) {
-//            viewModel.countSwitcher.observe(viewLifecycleOwner) {
-//                Log.d("Switcher", "count switchers $it")
-//            }
-
-//            viewModel.switcherManager.observe(viewLifecycleOwner) {
-//                binding.switcher.isChecked = it
-//            }
-        }
     }
 
     private val differCallback = object : DiffUtil.ItemCallback<SidePanelItem>() {
@@ -253,6 +226,4 @@ class SidePanelAdapter(
     fun setOnItemClickListener(listener: (SidePanelItem) -> Unit) {
         onItemClickListener = listener
     }
-
-
 }

@@ -119,12 +119,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btnSearch.setOnClickListener { view ->
-            /**
-             * вариант поиска со старым дизайном, не стал реализации вырезать
-             */
-//            dialogHelper = DialogHelper(this, viewModel)
-//            dialogHelper.createDialog()
-
             viewModel.searchMode()
             if (viewModel.searchModeIsActive.value!!) {
                 binding.btnSearch.setImageResource(R.drawable.btn_active_search)
@@ -189,7 +183,6 @@ class MainActivity : AppCompatActivity() {
                     viewModel.searchInfo("")
                 }
             }
-
         })
     }
 
